@@ -2,6 +2,8 @@
 - name: install and configure bigsense with postgresql
   hosts: all
   sudo: true
+  vars:
+    pginit_file: /etc/bigsense/.initalized
 
   tasks:
   - name: update apt cache
@@ -16,3 +18,17 @@
     apt_repository: repo='deb http://dl.bintray.com/bigsense/trusty /' state=present
   - name: install bigsense
     action: apt name=bigsense force=true
+
+  - name: check if postgresql has been initalized for bigsense
+    stat: path={{ pginit_file }}
+    register: pginit
+
+  - name: initalize postgresql
+    sudo_user: postgres
+    shell: psql < /etc/bigsense/initalize-pgsql.sql 
+    when: pginit.stat.exists == False
+    register: pginit_result
+
+  - name: mark initilization complete
+    file: path={{ pginit_file }} state=touch
+    when: pginit_result|success
