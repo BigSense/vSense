@@ -14,6 +14,9 @@
   - name: enable postgresql
     service: name=postgresql enabled=yes state=started
 
+  - name: install openjdk-7
+    action: apt name=openjdk-7-jre
+    
   - name: add bigsense repo
     apt_repository: repo='deb http://dl.bintray.com/bigsense/trusty /' state=present
   - name: install bigsense
@@ -25,10 +28,13 @@
 
   - name: initalize postgresql
     sudo_user: postgres
-    shell: psql < /etc/bigsense/initalize-pgsql.sql 
+    shell: psql < /etc/bigsense/initalize-pgsql.sql
     when: pginit.stat.exists == False
     register: pginit_result
 
   - name: mark initilization complete
     file: path={{ pginit_file }} state=touch
     when: pginit_result|success
+
+  - name: enable and start bigsense
+    service: name=bigsense enabled=yes state=started
