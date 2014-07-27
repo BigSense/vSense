@@ -4,6 +4,19 @@
   sudo: true
   vars:
     pginit_file: /etc/bigsense/.initalized
+    bigsense:
+      dbms: pgsql
+      environment: development
+      connectionString: "jdbc:postgresql://localhost:5432/bigsense"
+      dbDriver: org.postgresql.Driver
+      dbUser: db_bigsense
+      dbPass: bigsense
+      dboUser: db_bigsense_ddl
+      dboPass: bigsenseDDL
+      securityManager: DisabledSecurityManager
+      httpPort: 8181
+      server: tomcat
+
 
   tasks:
   - name: update apt cache
@@ -16,11 +29,13 @@
 
   - name: install openjdk-7
     action: apt name=openjdk-7-jre
-    
+
   - name: add bigsense repo
     apt_repository: repo='deb http://dl.bintray.com/bigsense/trusty /' state=present
   - name: install bigsense
     action: apt name=bigsense force=true
+  - name: configure bigsense
+    template: src=templates/application.conf.j2 dest=/etc/bigsense/application.conf owner=root group=bigsense mode=0640
 
   - name: check if postgresql has been initalized for bigsense
     stat: path={{ pginit_file }}
