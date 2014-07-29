@@ -17,7 +17,6 @@
       httpPort: 8181
       server: tomcat
 
-
   tasks:
   - name: update apt cache
     action: apt update_cache=yes
