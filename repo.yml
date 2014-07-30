@@ -2,10 +2,38 @@
 - name: install and configure linux repositories
   hosts: all
   sudo: true
+  vars:
+    repo_versions:
+      - version: trusty
+        distribution: Ubuntu
+      - version: wheezy
+        distribution: Debian
 
   tasks:
   - action: apt update_cache=yes
   - action: apt name=dpkg-sig
   - action: apt name=reprepro
   - action: apt name=apache2
+
   - user: name=repoman generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa comment="Repository Manager"
+
+  - file: path=/var/www/html state=directory owner=repoman group=repoman mode=0755
+  - file: path=/home/repoman/debs state=directory owner=repoman group=repoman mode=0755
+  - file: path=/var/www/html/index.html state=absent
+
+  - service: name=apache2 enabled=yes state=started
+
+  - local_action: stat path=work/debs
+    register: debs_available
+    sudo: false
+  - copy: src=work/debs dest=/home/repoman owner=repoman group=repoman
+    when: debs_available.stat.exists == True
+
+  - file: path=/var/www/html/conf state=directory owner=repoman group=repoman mode=0755
+  - template: src=templates/distributions.j2 dest=/var/www/html/conf/distributions owner=root group=repoman mode=0644
+
+  - command: reprepro -b /var/www/html includedeb {{ item[0].version }} {{ item[1] }}
+    with_nested:
+      - repo_versions
+      - with_fileglob: /home/repoman/debs/*.deb
+    when: debs_available.stat.exists == True
