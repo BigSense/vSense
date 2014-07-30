@@ -1,0 +1,11 @@
+---
+- name: install and configure linux repositories
+  hosts: all
+  sudo: true
+
+  tasks:
+  - action: apt update_cache=yes
+  - action: apt name=dpkg-sig
+  - action: apt name=reprepro
+  - action: apt name=apache2
+  - user: name=repoman generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa comment="Repository Manager"
