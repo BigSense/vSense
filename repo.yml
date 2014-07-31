@@ -3,37 +3,58 @@
   hosts: all
   sudo: true
   vars:
-    repo_versions:
+    repos:
       - version: trusty
         distribution: Ubuntu
       - version: wheezy
         distribution: Debian
 
   tasks:
+
+  # add aptly repo
+  - apt_key: keyserver=keys.gnupg.net id=2A194991
+  - apt_repository: repo='deb http://repo.aptly.info/ squeeze main' state=present
+
+  # Install packages
   - action: apt update_cache=yes
   - action: apt name=dpkg-sig
-  - action: apt name=reprepro
+  #- action: apt name=reprepro
   - action: apt name=apache2
+  - action: apt name=aptly
 
+  # Create Repo Management User and set permissions
   - user: name=repoman generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa comment="Repository Manager"
-
   - file: path=/var/www/html state=directory owner=repoman group=repoman mode=0755
   - file: path=/home/repoman/debs state=directory owner=repoman group=repoman mode=0755
   - file: path=/var/www/html/index.html state=absent
 
+  # A webserver for our repos
   - service: name=apache2 enabled=yes state=started
 
+  # Copy any new packages into the repo from our local environment
   - local_action: stat path=work/debs
     register: debs_available
     sudo: false
   - copy: src=work/debs dest=/home/repoman owner=repoman group=repoman
     when: debs_available.stat.exists == True
 
-  - file: path=/var/www/html/conf state=directory owner=repoman group=repoman mode=0755
-  - template: src=templates/distributions.j2 dest=/var/www/html/conf/distributions owner=root group=repoman mode=0644
+  - template: src=templates/aptly.conf.j2 dest=/home/repoman/{{ item.version }}.aptly owner=root group=repoman mode=0644
+    with_items: repos
+  - shell: ls -1 /home/repoman/debs/*.deb
+    register: deb_files
+  - command: aptly repo create -comment="bigsense repository" -config=/home/repoman/{{ item.version }}.aptly main
+    with_items: repos
 
-  - command: reprepro -b /var/www/html includedeb {{ item[0].version }} {{ item[1] }}
-    with_nested:
-      - repo_versions
-      - with_fileglob: /home/repoman/debs/*.deb
-    when: debs_available.stat.exists == True
+
+  # Configure reprepro
+  #- file: path=/var/www/html/conf state=directory owner=repoman group=repoman mode=0755
+  #- template: src=templates/distributions.j2 dest=/var/www/html/conf/distributions owner=root group=repoman mode=0644
+
+  # Run reprero on all new debs
+  #- shell: ls -1 /home/repoman/debs/*.deb
+  #  register: deb_files
+  #- command: reprepro -b /var/www/html includedeb {{ item[0].version }} {{ item[1] }}
+  #  with_nested:
+  #    - repo_versions
+  #    - deb_files.stdout_lines
+  #  when: debs_available.stat.exists == True
