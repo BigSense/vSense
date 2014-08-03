@@ -4,10 +4,8 @@
   sudo: true
   vars:
     repos:
-      - version: trusty
-        distribution: Ubuntu
-      - version: wheezy
-        distribution: Debian
+      - { version: trusty, distribution: Ubuntu }
+      - { version: wheezy, distribution: Debian }
 
   tasks:
 
@@ -42,8 +40,10 @@
     with_items: repos
   - shell: ls -1 /home/repoman/debs/*.deb
     register: deb_files
-  - command: aptly repo create -comment="bigsense repository" -config=/home/repoman/{{ item.version }}.aptly main
+  - command: aptly repo create -comment="bigsense repository" -config=/home/repoman/{{ item.version }}.aptly {{ item.version }}
     with_items: repos
+
+#sudo aptly -distribution=trusty -config=trusty.aptly publish repo trusty
 
 
   # Configure reprepro

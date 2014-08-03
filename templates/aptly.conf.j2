@@ -1,5 +1,6 @@
 {
   "rootDir" : "/var/www/html",
-  "ppaDistributorID" : "{{ repos.distribution }}",
-  "ppaCodename" : "{{ repos.version }}"
+  "ppaDistributorID" : "{{ item.distribution }}",
+  "ppaCodename" : "{{ item.version }}",
+  "gpgDisableSign": true,
 }
