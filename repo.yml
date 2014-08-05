@@ -6,6 +6,8 @@
     repos:
       - { version: trusty, distribution: Ubuntu }
       - { version: wheezy, distribution: Debian }
+    repoman_home: /home/repoman
+    webroot: /var/www/html
 
   tasks:
 
