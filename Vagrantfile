@@ -18,6 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "repo" do |repo|
+    repo.vm.network "forwarded_port", guest:80, host:8282
     repo.vm.provision "ansible" do |ansible|
       ansible.playbook = "repo.yml"
     end
