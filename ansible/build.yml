@@ -1,0 +1,6 @@
+---
+- name: provisions a Jenkins build server for BigSense and LtSense
+  hosts: build
+  sudo: true
+  roles:
+   - ansible-jenkins
