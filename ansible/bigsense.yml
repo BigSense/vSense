@@ -1,6 +1,6 @@
 ---
 - name: install and configure bigsense with postgresql
-  hosts: all
+  hosts: bigsense
   sudo: true
   vars:
     pginit_file: /etc/bigsense/.initalized

@@ -13,14 +13,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
     end
     bigsense.vm.provision "ansible" do |ansible|
-      ansible.playbook = "bigsense.yml"
+      ansible.playbook = "ansible/bigsense.yml"
     end
   end
 
   config.vm.define "repo" do |repo|
     repo.vm.network "forwarded_port", guest:80, host:8282
     repo.vm.provision "ansible" do |ansible|
-      ansible.playbook = "repo.yml"
+      ansible.playbook = "ansible/repo.yml"
     end
   end
 

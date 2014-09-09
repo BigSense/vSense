@@ -1,6 +1,6 @@
 ---
 - name: install and configure linux repositories
-  hosts: all
+  hosts: repo
   sudo: true
   vars:
     repos:
