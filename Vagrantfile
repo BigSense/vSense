@@ -24,4 +24,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vm.define "build" do |build|
+    build.vm.network "forwarded_port", guest:8080, host:8090
+    build.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
+    end
+    build.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/build.yml"
+    end
+  end
+
 end
