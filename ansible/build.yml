@@ -4,3 +4,13 @@
   sudo: true
   roles:
    - ansible-jenkins
+  vars:
+    plugins:
+      - 'sbt'
+      - 'git'
+
+  tasks:
+    # Install Packages
+    - apt_repository: repo='deb http://dl.bintray.com/sbt/debian/ /' state=present
+    - action: apt update_cache=yes
+    - action: apt name=sbt  force=true
