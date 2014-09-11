@@ -8,6 +8,12 @@
     plugins:
       - 'sbt'
       - 'git'
+    port: 8080
+    prefix: '/build'
+    email:
+      smtp_host: 'mail.bigsense.io'
+      smtp_ssl: 'true'
+      default_email_suffix: '@bigsense.io'
 
   tasks:
     # Install Packages
