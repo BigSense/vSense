@@ -1,0 +1,9 @@
+---
+- name: install and configure ltsense
+  hosts: ltsense
+  sudo: true
+
+
+  tasks:
+  - name: update apt cache
+    action: apt update_cache=yes
