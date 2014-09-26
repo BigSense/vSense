@@ -1,0 +1,19 @@
+#!/bin/sh
+
+BASE=$( cd "$( dirname "$0" )" && pwd )
+
+deb_ver() {
+  debversion=$(basename $repo)
+  echo "${debversion%.*}"
+}
+
+for deb in $BASE/debs/*.deb; do
+  for repo in $BASE/*.aptly; do
+    #echo "Adding $(basename deb) to $(deb_ver $repo)"
+    aptly -config=$repo repo add $(deb_ver $repo) $deb
+  done
+done
+
+for repo in $BASE/*.aptly; do
+  aptly -architectures=all -config=$repo publish update $(deb_ver $repo)
+done
