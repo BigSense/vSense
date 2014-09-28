@@ -34,4 +34,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
+  config.vm.define "win2012sql" do |win2012sql|
+    config.vm.box = "Windows2012R2"
+    config.vm.communicator = "winrm"
+  end
+
 end

@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+if __name__ == '__main__':
+
+  parser = OptionParser(usage="%prog [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>",
+                         description="vSense Environment Provisioner.\n", version="%prog x.x", epilog='Copyright 2014 BigSense. GNU GPLv3 http://BigSense.io')
+  parser.add_option('-f','--fixtures',action='store_true',dest='fixtures',help='install fixtures')
+  parser.add_option('-e','--env',action='store',help='environment type (build|run) [default: %default]',dest='env',default='run')
+  parser.add_option('-d','--database',action='store',help='database type (mysql|postgres|mssql)',dest='db')
+
+  (options, args) = parser.parse_args()
+
+  #pid file
+  if options.pidfile is not None:
+    with(open(options.pidfile,'w')) as pid_fd:
+      pid_fd.write( "%d\n" % getpid())
