@@ -37,6 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "win2012sql" do |win2012sql|
     config.vm.box = "Windows2012R2"
     config.vm.communicator = "winrm"
+    config.vm.network "forwarded_port", host: 3389, guest: 3389
   end
 
 end
