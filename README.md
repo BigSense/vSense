@@ -3,6 +3,16 @@ vSense
 
 vSense is a set of Vagrant environments and Ansible playbooks for building full BigSense and LtSense environments. vSense can also be used to replicate the build and repository servers use by the project for local development forks.
 
+Installation
+============
+
+vSense depends on Vagrant 1.6+ and VirtualBox, as well as some additional plugins.
+
+`
+git clone https://github.com/sumdog/vSense
+vagrant plugin install vagrant-hostmanager
+`
+
 Creating an Environment
 =======================
 

@@ -1,5 +1,30 @@
-#!/usr/bin/env python
+#!/usr/bin/env ruby
 
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+
+  opts.banner = 'Usage: create_env [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>'
+
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  opts.on('-f','--fixtures','Install fixtures') do |f|
+    options[:fixtures] = f
+  end
+
+  opts.on('-e','--env','Environment type (build|run) [default: run]') do |e|
+    
+  end
+
+end.parse!
+
+
+
+=begin
 if __name__ == '__main__':
 
   parser = OptionParser(usage="%prog [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>",
@@ -14,3 +39,4 @@ if __name__ == '__main__':
   if options.pidfile is not None:
     with(open(options.pidfile,'w')) as pid_fd:
       pid_fd.write( "%d\n" % getpid())
+=end

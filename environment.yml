@@ -1,0 +1,11 @@
+--- 
+name: builder
+type: build
+domain: internal
+servers:
+  repository:
+    hostname: repo
+    ip: 10.11.1.10
+  build:
+    hostname: build
+    ip: 10.11.1.11
