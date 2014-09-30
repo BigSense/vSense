@@ -2,13 +2,38 @@
 
 require 'optparse'
 
+#Coloriation taken from http://stackoverflow.com/questions/1489183/colorized-ruby-output
+
+class String
+def black;          "\033[30m#{self}\033[0m" end
+def red;            "\033[31m#{self}\033[0m" end
+def green;          "\033[32m#{self}\033[0m" end
+def brown;          "\033[33m#{self}\033[0m" end
+def blue;           "\033[34m#{self}\033[0m" end
+def magenta;        "\033[35m#{self}\033[0m" end
+def cyan;           "\033[36m#{self}\033[0m" end
+def gray;           "\033[37m#{self}\033[0m" end
+def bg_black;       "\033[40m#{self}\033[0m" end
+def bg_red;         "\033[41m#{self}\033[0m" end
+def bg_green;       "\033[42m#{self}\033[0m" end
+def bg_brown;       "\033[43m#{self}\033[0m" end
+def bg_blue;        "\033[44m#{self}\033[0m" end
+def bg_magenta;     "\033[45m#{self}\033[0m" end
+def bg_cyan;        "\033[46m#{self}\033[0m" end
+def bg_gray;        "\033[47m#{self}\033[0m" end
+def bold;           "\033[1m#{self}\033[22m" end
+def reverse_color;  "\033[7m#{self}\033[27m" end
+end
+
+## Arguments
+
 options = {}
-OptionParser.new do |opts|
+opts = OptionParser.new do |opts|
 
   opts.banner = 'Usage: create_env [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>'
 
   opts.on_tail("-h", "--help", "Show this message") do
-    puts opts
+    puts STDERR.opts
     exit
   end
 
@@ -16,27 +41,38 @@ OptionParser.new do |opts|
     options[:fixtures] = f
   end
 
-  opts.on('-e','--env','Environment type (build|run) [default: run]') do |e|
-    
+  opts.on('-e','--env ENVIRONMENT',[:build,:run],'Environment type (build|run) [default: run]') do |e|
+    options[:environment] = e
   end
 
-end.parse!
+  opts.on('-d','--database DATABASE',[:mysql,:postgres,:mssql],'Database backend (mysql|postgres|mssql)') do |db|
+    options[:database] = db
+  end
+
+end
+
+## Validation
+
+begin opts.parse! ARGV
+rescue *[OptionParser::InvalidOption,OptionParser::InvalidArgument] => e
+  STDERR.puts e
+  STDERR.puts opts
+  exit 1
+end
+
+if not ARGV
+  STDERR.puts 'You must specify an environment name'
+  exit 1
+elsif ARGV.length != 1
+  STDERR.puts 'Unknown trailing arguments: %s' %[ARGV.drop(1)]
+  exit 1
+end
 
 
+## Build Env
 
-=begin
-if __name__ == '__main__':
+if options[:environment] == :build
 
-  parser = OptionParser(usage="%prog [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>",
-                         description="vSense Environment Provisioner.\n", version="%prog x.x", epilog='Copyright 2014 BigSense. GNU GPLv3 http://BigSense.io')
-  parser.add_option('-f','--fixtures',action='store_true',dest='fixtures',help='install fixtures')
-  parser.add_option('-e','--env',action='store',help='environment type (build|run) [default: %default]',dest='env',default='run')
-  parser.add_option('-d','--database',action='store',help='database type (mysql|postgres|mssql)',dest='db')
+  puts 'Would you like to import a pgp key to sign your repository?'.cyan
 
-  (options, args) = parser.parse_args()
-
-  #pid file
-  if options.pidfile is not None:
-    with(open(options.pidfile,'w')) as pid_fd:
-      pid_fd.write( "%d\n" % getpid())
-=end
+end
