@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'fileutils'
 
 #Coloriation taken from http://stackoverflow.com/questions/1489183/colorized-ruby-output
 
@@ -68,11 +69,16 @@ elsif ARGV.length != 1
   exit 1
 end
 
+base    = File.dirname(__FILE__)
+env_dir = File.join(base,'virtual-env',ARGV[0])
 
 ## Build Env
 
 if options[:environment] == :build
 
-  puts 'Would you like to import a pgp key to sign your repository?'.cyan
+  puts ('Creating Build Environment: %s' %ARGV[0]).green
+  FileUtils.mkdir_p env_dir
+  #FileUtils.cp %w(cgi.rb complex.rb date.rb), '/usr/lib/ruby/1.6', :verbose => true
+
 
 end

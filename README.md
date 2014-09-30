@@ -35,4 +35,4 @@ TODO - documentation
 Creating a build Environment
 ============================
 
-A build environment
+A build environment can be useful for developers who wish to fork the project and have their own build servers and local package repositories. The default configuration files generated point to the source code located on Github. You can adjust the `environment.yml`, prior to Vagrant provisioning, to change these locations to local forks. When building your runtime environment, adjust its `environment.yml` as well, prior to provisioning, to point to your local build environment.

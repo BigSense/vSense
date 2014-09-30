@@ -10,6 +10,8 @@
     repo_init: "{{repoman_home}}/.repoinit"
     publish_init: "{{repoman_home}}/.published"
     timestamp: "{{ ansible_date_time.epoch }}"
+  vars_files:
+    - environment.yml    
 
   tasks:
 
@@ -26,6 +28,10 @@
   # Create Repo Management User and set permissions
   - user: name=repoman generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa comment="Repository Manager"
   - file: path=/home/repoman/debs state=directory owner=repoman group=repoman mode=0775
+
+  # Create PGP Keys
+  template: src=templates/pgp.batch.j2 dest={{ repoman_home }}/pgp.batch owner=repoman group=root mode=0600
+  command: pgp --gen-key --batch {{ repoman_home }}/pgp.batch creates={{ repoman_home }}/bigsense.sec
 
   # Create aptly repo db
   - template: src=templates/aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root group=repoman mode=0644
