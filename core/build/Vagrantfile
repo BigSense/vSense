@@ -3,8 +3,8 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-require 'yaml'
-vars = YAML.load_file('environment.yml')
+require './vagrantenv'
+vars = VagrantEnv.new('environment.yml')
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
@@ -16,14 +16,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.include_offline = true
 
   config.vm.define "repo" do |repo|
-    bigsense.vm.network :private_network, ip: '10.11.1.2'
+    repo.vm.network :private_network, ip: vars.ip('repository')
+    repo.vm.hostname = vars.hostname('repository')
+    repo.hostmanager.aliases = vars.aliases('repository')
     repo.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/repo.yml"
     end
   end
 
   config.vm.define "build" do |build|
-    bigsense.vm.network :private_network, ip: '10.11.1.3'
+    build.vm.network :private_network, ip: vars.ip('build')
+    build.vm.hostname = vars.hostname('build')
+    build.hostmanager.aliases = vars.aliases('build')
     build.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
     end

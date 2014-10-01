@@ -3,8 +3,8 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-require 'yaml'
-vars = YAML.load_file('environment.yml')
+require 'vagrantenv'
+vars = VagrantEnv.new('environment.yml')
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
@@ -17,9 +17,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "bigsense" do |bigsense|
 
-    bigsense.vm.network :private_network, ip: '10.11.1.1'
-    bigsense.vm.hostname = 'server'
-    bigsense.hostmanager.aliases = %w(server.bigsense.io)
+    bigsense.vm.network :private_network, ip: vars.ip('bigsense')
+    bigsense.vm.hostname = vars.hostname('bigsense')
+    bigsense.hostmanager.aliases = vars.aliases('bigsense')
 
     bigsense.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]

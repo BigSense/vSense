@@ -34,7 +34,7 @@ opts = OptionParser.new do |opts|
   opts.banner = 'Usage: create_env [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>'
 
   opts.on_tail("-h", "--help", "Show this message") do
-    puts STDERR.opts
+    STDERR.puts opts
     exit
   end
 
@@ -61,24 +61,34 @@ rescue *[OptionParser::InvalidOption,OptionParser::InvalidArgument] => e
   exit 1
 end
 
-if not ARGV
-  STDERR.puts 'You must specify an environment name'
+if ARGV.length == 0
+  STDERR.puts 'You must specify an environment name'.red
   exit 1
 elsif ARGV.length != 1
-  STDERR.puts 'Unknown trailing arguments: %s' %[ARGV.drop(1)]
+  STDERR.puts ('Unknown trailing arguments: %s' %[ARGV.drop(1)]).red
   exit 1
 end
 
-base    = File.dirname(__FILE__)
+base    = File.dirname(File.expand_path __FILE__)
 env_dir = File.join(base,'virtual-env',ARGV[0])
 
 ## Build Env
 
 if options[:environment] == :build
 
-  puts ('Creating Build Environment: %s' %ARGV[0]).green
-  FileUtils.mkdir_p env_dir
-  #FileUtils.cp %w(cgi.rb complex.rb date.rb), '/usr/lib/ruby/1.6', :verbose => true
+  if File.exists?(env_dir)
+    STDOUT.puts ('Environment already exists: %s' %[env_dir]).red
+    exit 2
+  else
+    puts ('Creating Build Environment: %s' %ARGV[0]).green
+    FileUtils.mkdir_p env_dir
+    FileUtils.cp_r( File.join(base,'core/build/environment.yml'), env_dir)
+    File.symlink(File.join(base,'core/build/Vagrantfile'),File.join(env_dir,'Vagrantfile'))
+    File.symlink(File.join(base,'core/vagrantenv.rb'),File.join(env_dir,'vagrantenv.rb'))
+    File.symlink(File.join(base,'ansible'),File.join(env_dir,'ansible'))
 
+    puts ('Review the default settings in %s' %[File.join(env_dir,'environment.yml')]).magenta
+    #puts 'Then run vagrant up repo'
+  end
 
 end
