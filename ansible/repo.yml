@@ -10,8 +10,9 @@
     repo_init: "{{repoman_home}}/.repoinit"
     publish_init: "{{repoman_home}}/.published"
     timestamp: "{{ ansible_date_time.epoch }}"
+    startup_delay_s: 30
   vars_files:
-    - environment.yml    
+    - ../environment.yml    
 
   tasks:
 
@@ -30,11 +31,11 @@
   - file: path=/home/repoman/debs state=directory owner=repoman group=repoman mode=0775
 
   # Create PGP Keys
-  template: src=templates/pgp.batch.j2 dest={{ repoman_home }}/pgp.batch owner=repoman group=root mode=0600
-  command: pgp --gen-key --batch {{ repoman_home }}/pgp.batch creates={{ repoman_home }}/bigsense.sec
+  - template: src=templates/pgp.batch.j2 dest={{ repoman_home }}/pgp.batch owner=repoman group=root mode=0600
+  - command: gpg --gen-key --batch {{ repoman_home }}/pgp.batch creates={{ repoman_home }}/bigsense.sec
 
   # Create aptly repo db
-  - template: src=templates/aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root group=repoman mode=0644
+  - template: src=templates/aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root mode=0644
     with_items: repos
   - command: aptly repo create -comment="bigsense repository" -config=/home/repoman/{{ item.version }}.aptly {{ item.version }} creates={{ repo_init }}
     with_items: repos

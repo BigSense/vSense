@@ -13,10 +13,10 @@ servers:
     bigsense_tester_src: http://github.com/sumdog/BigSenseTester
     ltsense_src : http://github.com/sumdog/LtSense
 pgp:
-  key-type: DSA
-  key-length: 1024
-  subkey-type: ELG-E
-  subkey-length: 1024
+  key_type: DSA
+  key_length: 1024
+  subkey_type: ELG-E
+  subkey_length: 1024
   name: http://example.org
   comment: BigSensePGPKey
   expire: 0
