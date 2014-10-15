@@ -31,6 +31,5 @@ case ARGV[0]
   	puts('todo: invalid')
 end
 
-action.validate
 action.run
 

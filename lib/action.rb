@@ -2,12 +2,20 @@ require 'optparse'
 
 class Action
 
+
+  #TODO expand full path
+  BASE    = File.join(File.dirname(File.expand_path __FILE__),'..')
+  ENVS    = File.join(BASE,'virtual-env')
+
   @args = nil
   @opts = nil
+  @env_dir  = nil
 
   def initialize(args)
   	@args = args.drop(1)
-  	set_options()
+    set_options
+    validate
+    @env_dir  = File.join(ENVS,@args[0])
   end
 
   def set_options()
