@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require_relative 'lib/colours'
+require_relative 'lib/create'
+
+usage = <<-USAGE
+Usage: vsense [ create | list | genkeys | destory | start | stop ]
+
+\t create  - creates a new environment
+\t list    - list of all environments
+\t genkeys - generate PGP keys for a build environment
+\t destory - stop and delete all files associated with an environment 
+\t start   - start an environment
+\t stop    - stop an environment 
+
+add -h or --help for additional argumnets for each command
+USAGE
+
+subcommands = [ 'create' , 'list' , 'genkeys' , 'destroy' , 'start' , 'stop' ]
+
+if !subcommands.include? ARGV[0]
+  print usage
+  exit 2
+end
+
+action = nil
+case ARGV[0]
+  when 'create'
+    action = CreateAction.new(ARGV)
+  else
+  	puts('todo: invalid')
+end
+
+action.validate
+action.run
+
