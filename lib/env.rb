@@ -7,13 +7,42 @@ class Environment
   @@env_settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : {}
 
   def self.add_env(name,env_type)
-    @@env_settings[name] = { 'type' => env_type } 
+    @@env_settings << { 'name' => name , 'type' => env_type } 
     save_env_list
   end
 
   def self.del_env(name)
-    @@env_settings.delete(name)
+    @@env_settings = @@env_settings.reject { |h| h['name'] == name }
     save_env_list
+  end
+
+  def self.info(name)
+    @@env_settings.reject { |h| h['name'] != name }
+  end
+
+  def self.list()
+    cols = [ 'name' , 'type'  ]
+
+    #Taken from http://ruby.about.com/od/examples/a/Csv-Example-Format-Strings-And-Printing-The-Ascii-Table.htm
+    # TODO: make this more general
+
+    # Determine column widths
+    column_widths = {}
+    cols.each do|c|
+      column_widths[c] = [ c.length, *@@env_settings.map{|g| g[c].length } ].max
+    end
+
+    # Make the format string
+    format = cols.map{|c| "%-#{column_widths[c]}s" }.join(' | ')
+
+    # Print the table
+    puts format % cols
+    puts format.tr(' |', '-+') % column_widths.values.map{|v| '-'*v }
+
+    @@env_settings.each do|g|
+      puts format % cols.map{|c| g[c] }
+    end
+
   end
 
   private

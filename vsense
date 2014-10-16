@@ -2,6 +2,8 @@
 
 require_relative 'lib/colours'
 require_relative 'lib/create'
+require_relative 'lib/env'
+require_relative 'lib/genkey'
 
 usage = <<-USAGE
 Usage: vsense [ create | list | genkeys | destory | start | stop ]
@@ -27,8 +29,11 @@ action = nil
 case ARGV[0]
   when 'create'
     action = CreateAction.new(ARGV)
-  else
-  	puts('todo: invalid')
+  when 'list'
+    Environment.list
+    exit 0 
+  when 'genkeys'
+    action = GenKeyAction.new(ARGV)
 end
 
 action.run

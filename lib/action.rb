@@ -1,10 +1,9 @@
 require 'optparse'
+require 'pathname'
 
 class Action
 
-
-  #TODO expand full path
-  BASE    = File.join(File.dirname(File.expand_path __FILE__),'..')
+  BASE    = Pathname.new(File.join(File.dirname(File.expand_path __FILE__),'..')).realpath
   ENVS    = File.join(BASE,'virtual-env')
 
   @args = nil
@@ -12,13 +11,17 @@ class Action
   @env_dir  = nil
 
   def initialize(args)
-  	@args = args.drop(1)
+    @args = args.drop(1)
     set_options
     validate
     @env_dir  = File.join(ENVS,@args[0])
   end
 
   def set_options()
+  end
+
+  def settings()
+    YAML.load_file(File.join(ENVS,@args[0],'environment.yml'))
   end
 
   def validate()  
@@ -31,7 +34,17 @@ class Action
       STDERR.puts e
       STDERR.puts @opts
       exit 1
-    end  	
+    end
+
+    #Every action requires an environment name to act on
+    # if this changes, we can add an option boolean parameter
+    if @args.length == 0
+      STDERR.puts @opts
+      exit 1
+    elsif @args.length != 1
+      STDERR.puts ('Unknown trailing arguments: %s' %[@args.drop(1)]).red
+      exit 1
+    end        
   end
 
   def run()
