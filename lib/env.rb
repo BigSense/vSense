@@ -4,14 +4,14 @@ require_relative "action"
 class Environment
 
   ENV_FILE = File.join(Action::ENVS,'list.yml')
-  @@env_settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : {}
+  @@env_settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : []
 
-  def self.add_env(name,env_type)
+  def self.add(name,env_type)
     @@env_settings << { 'name' => name , 'type' => env_type } 
     save_env_list
   end
 
-  def self.del_env(name)
+  def self.del(name)
     @@env_settings = @@env_settings.reject { |h| h['name'] == name }
     save_env_list
   end
@@ -21,6 +21,12 @@ class Environment
   end
 
   def self.list()
+
+    if @@env_settings.length == 0
+      puts 'No environments. To create one, use ./vsense create'.red
+      exit 0
+    end
+
     cols = [ 'name' , 'type'  ]
 
     #Taken from http://ruby.about.com/od/examples/a/Csv-Example-Format-Strings-And-Printing-The-Ascii-Table.htm

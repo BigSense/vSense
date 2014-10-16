@@ -55,7 +55,7 @@ class CreateAction < Action
         File.symlink(File.join(BASE,'core/build/Vagrantfile'),File.join(@env_dir,'Vagrantfile'))
         File.symlink(File.join(BASE,'core/vagrantenv.rb'),File.join(@env_dir,'vagrantenv.rb'))
         File.symlink(File.join(BASE,'ansible'),File.join(@env_dir,'ansible'))
-        Environment::add_env(@args[0],:build.to_s)
+        Environment::add(@args[0],:build.to_s)
 
         puts ('1) Review the default settings in %s' %[File.join(@env_dir,'environment.yml')]).cyan
         puts ('2) Run the following to generate your PGP keys:').cyan
