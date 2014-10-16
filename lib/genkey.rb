@@ -12,6 +12,10 @@ class GenKeyAction < Action
 
       opts.banner = 'Usage: vsense genkey <environment name>'
 
+      opts.on('-f','--force','Overwrite existing key') do |f|
+        @options[:force] = f
+      end
+
       opts.on_tail("-h", "--help", "Show this message") do
         STDERR.puts opts
         exit
@@ -35,7 +39,20 @@ class GenKeyAction < Action
 
   def run()
     super
-    puts 'Creating PGP Keys for #{@args[0]}'.green
+
+    pub_file = File.join(@env_dir,'bigsense.pub')
+    sec_file = File.join(@env_dir,'bigsense.sec')
+
+    if File.exists?(pub_file) or File.exists?(sec_file)
+      if @options[:force] 
+        puts 'Warning: overwriting existing key(s)'.gray
+      else
+        STDERR.puts 'Keys already exist. Aborting. (Use -f to force)'.red
+        exit 2
+      end
+    end
+
+    puts "Creating PGP Keys for #{@args[0]}".green
     pgp = settings()['pgp']
 
 pgpfile = <<-PGPBATCH
@@ -47,15 +64,19 @@ Name-Real: #{pgp['name']}
 Name-Comment: #{pgp['comment']}
 Expire-Date: #{pgp['expire']}
 Passphrase: #{pgp['passphrase']}
-%pubring bigsense.pub
-%secring bigsense.sec
+%pubring #{pub_file}
+%secring #{sec_file}
 %commit
 %echo done
 PGPBATCH
 
-#gpg --gen-key --batch {{ repoman_home }}/pgp.batch
+   puts pgpfile.brown
+   puts 'Note: This may take a long time'.gray
 
-    puts pgpfile.brown
+   batch_file = File.join(@env_dir,'pgp.batch')
+   fd = File.write(batch_file,pgpfile)
+   system('gpg','--gen-key','--batch',batch_file)
+   File.delete(batch_file)
 
 
   end
