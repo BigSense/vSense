@@ -2,16 +2,17 @@
 
 require_relative 'lib/colours'
 require_relative 'lib/create'
+require_relative 'lib/destroy'
 require_relative 'lib/env'
 require_relative 'lib/genkey'
 
 usage = <<-USAGE
-Usage: vsense [ create | list | genkeys | destory | start | stop ]
+Usage: vsense [ create | list | genkeys | destroy | start | stop ]
 
 \t create  - creates a new environment
 \t list    - list of all environments
 \t genkeys - generate PGP keys for a build environment
-\t destory - stop and delete all files associated with an environment 
+\t destroy - stop and delete all files associated with an environment 
 \t start   - start an environment
 \t stop    - stop an environment 
 
@@ -34,6 +35,8 @@ case ARGV[0]
     exit 0 
   when 'genkeys'
     action = GenKeyAction.new(ARGV)
+  when 'destroy'
+  	action = DestroyAction.new(ARGV)
 end
 
 action.run
