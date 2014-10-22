@@ -16,6 +16,10 @@ class Environment
     save_env_list
   end
 
+  def self.build_envs()
+    @@env_settings.reject { |e| e['type'] != 'build' }.collect { |l| l['name'] }
+  end
+
   def self.info(name)
     @@env_settings.reject { |h| h['name'] != name }
   end

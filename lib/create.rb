@@ -12,7 +12,7 @@ class CreateAction < Action
     @options = {}
     @opts = OptionParser.new do |opts|
 
-      opts.banner = 'Usage: vsense create [-f] [-e (build|run)] [-d (mysql|postgres|mssql)] <environment name>'
+      opts.banner = 'Usage: vsense create [-f] [-e (build|run)] [-b <build environment name>] [-d (mysql|postgres|mssql)] <environment name>'
 
       opts.on_tail("-h", "--help", "Show this message") do
         STDERR.puts opts
@@ -31,11 +31,19 @@ class CreateAction < Action
         @options[:database] = db
       end
 
+      opts.on('-b','--build BUILD','Use a local build environment [default: use official bigsense.io]') do |build|
+        @options[:build] = build
+      end
+
     end
   end
 
   def validate()
-    super     
+    super  
+    if not @options[:build].nil? and not Environment.build_envs().include?(@options[:build])
+      STDERR.puts "#{@options[:build]} is not a valid build environment".red
+      exit 1
+    end
   end
 
   def run()
