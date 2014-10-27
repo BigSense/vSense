@@ -5,6 +5,8 @@ require_relative 'env'
 
 class CreateAction < Action
 
+  DATABASES = [:mysql,:postgres,:mssql]
+
 ## Arguments
 
   def set_options()
@@ -27,7 +29,7 @@ class CreateAction < Action
         @options[:environment] = e
       end
 
-      opts.on('-d','--database DATABASE',[:mysql,:postgres,:mssql],'Database backend (mysql|postgres|mssql)') do |db|
+      opts.on('-d','--database DATABASE',DATABASES,'Database backend (mysql|postgres|mssql)') do |db|
         @options[:database] = db
       end
 
@@ -44,37 +46,79 @@ class CreateAction < Action
       STDERR.puts "#{@options[:build]} is not a valid build environment".red
       exit 1
     end
+    if @options[:database].nil?
+      STDERR.puts "-d database type required.".red
+      exit 1
+    end
+    if not DATABASES.include?(@options[:database])
+      STDERR.puts "#{@options[:database]} is not a valid database type".red
+      exit 1
+    end 
+
+    #set defaults
+    if @options[:environment].nil?
+      @options[:environment] = :run
+    end
+
   end
 
   def run()
     super
 
+    if File.exists?(@env_dir)
+      STDOUT.puts ('Environment already exists: %s' %[@env_dir]).red
+      exit 2
+    end
+    
+    FileUtils.mkdir_p @env_dir    
+
     ## Build Env
 
     if @options[:environment] == :build
 
-      if File.exists?(@env_dir)
-        STDOUT.puts ('Environment already exists: %s' %[@env_dir]).red
-        exit 2
-      else
-        puts ('Creating Build Environment: %s' % @args[0]).green
-        FileUtils.mkdir_p @env_dir
-        FileUtils.cp_r( File.join(BASE,'core/build/environment.yml'), @env_dir)
-        File.symlink(File.join(BASE,'core/build/Vagrantfile'),File.join(@env_dir,'Vagrantfile'))
-        File.symlink(File.join(BASE,'core/vagrantenv.rb'),File.join(@env_dir,'vagrantenv.rb'))
-        File.symlink(File.join(BASE,'ansible'),File.join(@env_dir,'ansible'))
-        Environment::add(@args[0],:build.to_s)
-
-        puts ('1) Review the default settings in %s' %[File.join(@env_dir,'environment.yml')]).cyan
-        puts ('2) Run the following to generate your PGP keys:').cyan
-        puts ("\t./vsense genkeys %s" %[@args[0]]).cyan
-        puts ("\t(alternatively, export your PGP key to (insert path)").cyan
-        puts ('3) Run ./vsense start %s' %[@args[0]]).cyan
-      end
+      puts ('Creating Build Environment: %s' % @args[0]).green
+      FileUtils.cp_r( File.join(BASE,'core/build/environment.yml'), @env_dir)
 
     else #default is :run
-      puts ('TODO: implement').red
+
+      puts ('Creating Runtime Environment: %s' % @args[0]).green
+
+      #configuration
+
+      env_config = YAML.load_file(File.join(BASE,'core/run/environment.yml'))
+      if not @options[:build].nil?
+        build_config = YAML.load_file(File.join(ENVS,@options[:build],"environment.yml"))
+        env_config['repo_host'] = '%s.%s' % [build_config['servers']['repository']['hostname'], build_config['domain']]
+      end
+
+      env_config['database'] = @options[:database]
+
+      #files
+
+      File.open(File.join(@env_dir,'environment.yml'), 'w') do |file|
+        file.write(env_config.to_yaml)
+      end
+
     end
+
+    #shared
+
+    env_str = @options[:environment].to_s
+    File.symlink(File.join(BASE,"core/#{env_str}/Vagrantfile"),File.join(@env_dir,'Vagrantfile'))
+    File.symlink(File.join(BASE,'core/vagrantenv.rb'),File.join(@env_dir,'vagrantenv.rb'))
+    File.symlink(File.join(BASE,'ansible'),File.join(@env_dir,'ansible'))
+
+    Environment::add(@args[0],env_str)
+
+    step = 0
+    puts ('%d) Review the default settings in %s' %[step+=1,File.join(@env_dir,'environment.yml')]).cyan
+    if @options[:environment] == :build
+      puts ("#{step+=1}) Run the following to generate your PGP keys:").cyan
+      puts ("\t./vsense genkeys %s" %[@args[0]]).cyan
+      puts ("\t(alternatively, export your PGP key to (insert path)").cyan
+    end
+    puts ('%d) Run ./vsense start %s' %[step+=1,@args[0]]).cyan
+
   end
 
 end
