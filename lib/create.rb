@@ -42,23 +42,41 @@ class CreateAction < Action
 
   def validate()
     super  
-    if not @options[:build].nil? and not Environment.build_envs().include?(@options[:build])
-      STDERR.puts "#{@options[:build]} is not a valid build environment".red
-      exit 1
-    end
-    if @options[:database].nil?
-      STDERR.puts "-d database type required.".red
-      exit 1
-    end
-    if not DATABASES.include?(@options[:database])
-      STDERR.puts "#{@options[:database]} is not a valid database type".red
-      exit 1
-    end 
 
     #set defaults
     if @options[:environment].nil?
       @options[:environment] = :run
     end
+
+    #build validation rules    
+    if @options[:environment] == :build 
+      if not @options[:build].nil?
+        STDERR.puts "Build environments do not take a -b/--build flag"
+        exit 1
+      end
+      if not @options[:database].nil?
+        STDERR.puts "Build environments do not take -d/--database flag"
+        exit 1
+      end      
+    end
+
+    #runtime validation rules
+    if @options[:environment] == :run
+      if not @options[:build].nil? and not Environment.build_envs().include?(@options[:build])
+        STDERR.puts "#{@options[:build]} is not a valid build environment".red
+        exit 1
+      end
+      if @options[:database].nil?
+        STDERR.puts "-d database type required.".red
+        exit 1
+      end
+      if not DATABASES.include?(@options[:database])
+        STDERR.puts "#{@options[:database]} is not a valid database type".red
+        exit 1
+      end 
+    end
+
+
 
   end
 
@@ -115,7 +133,7 @@ class CreateAction < Action
     if @options[:environment] == :build
       puts ("#{step+=1}) Run the following to generate your PGP keys:").cyan
       puts ("\t./vsense genkeys %s" %[@args[0]]).cyan
-      puts ("\t(alternatively, export your PGP key to (insert path)").cyan
+      puts ("\t(alternatively, export your PGP key to #{@env_dir}/bigsense.pub and bigsnese.sec").cyan
     end
     puts ('%d) Run ./vsense start %s' %[step+=1,@args[0]]).cyan
 
