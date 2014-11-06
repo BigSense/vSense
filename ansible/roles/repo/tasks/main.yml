@@ -54,7 +54,7 @@
 
   #add publishing script and copy ssh transfer keys
   - copy: src=files/publish dest={{ repoman_home }} owner=root group=repoman mode=0650
-  - fetch: src={{ repoman_home }}/.ssh/id_dsa.pub dest=../work/repoman.ssh.pub fail_on_missing=true flat=true
+  - fetch: src={{ repoman_home }}/.ssh/id_dsa.pub dest=../repoman.ssh.pub fail_on_missing=true flat=true
 
   # serve repo though nginx
   - template: src=templates/nginx.j2 dest=/etc/nginx/sites-available/repo owner=root group=root mode=0644

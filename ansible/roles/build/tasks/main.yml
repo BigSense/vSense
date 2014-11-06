@@ -22,6 +22,12 @@
     - apt_repository: repo='deb http://dl.bintray.com/sbt/debian/ /' state=present
     - action: apt update_cache=yes
     - action: apt name=sbt  force=true
+    - action: apt name=ruby-dev
+    - gem: name=fpm state=present
 
     # Jenkins Settings
     copy: src=files/org.jvnet.hudson.plugins.SbtPluginBuilder.xml dest=/var/lib/jenkins owner=jenkins group=jenkins mode=0644
+
+    # Add SSH Key
+    - authorized_key: user=jenkins key=../repoman.ssh.pub
+
