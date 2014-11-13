@@ -1,6 +1,5 @@
 ---
 - name: install and configure linux repositories
-  hosts: repo
   sudo: true
   vars:
     repos:
@@ -12,7 +11,7 @@
     timestamp: "{{ ansible_date_time.epoch }}"
     startup_delay_s: 30
   vars_files:
-    - ../environment.yml    
+    - ../environment.yml
 
   tasks:
 

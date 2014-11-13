@@ -1,33 +1,15 @@
 ---
-- name: provisions a Jenkins build server for BigSense and LtSense
-  hosts: build
-  sudo: true
-  roles:
-   - ansible-jenkins
-  vars:
-    plugins:
-      - 'sbt'
-      - 'git'
-      - 'ssh'
-      - 'scp'
-    port: 8080
-    prefix: '/build'
-    email:
-      smtp_host: 'mail.bigsense.io'
-      smtp_ssl: 'true'
-      default_email_suffix: '@bigsense.io'
+# Install Packages
+- apt_repository: repo='deb http://dl.bintray.com/sbt/debian/ /' state=present
+- action: apt update_cache=yes
+- action: apt name=sbt  force=true
+- action: apt name=ruby-dev
+- gem: name=fpm state=present
+- gem: name=git state=present
 
-  tasks:
-    # Install Packages
-    - apt_repository: repo='deb http://dl.bintray.com/sbt/debian/ /' state=present
-    - action: apt update_cache=yes
-    - action: apt name=sbt  force=true
-    - action: apt name=ruby-dev
-    - gem: name=fpm state=present
+# Jenkins Settings
+- copy: src=files/org.jvnet.hudson.plugins.SbtPluginBuilder.xml dest=/var/lib/jenkins owner=jenkins group=jenkins mode=0644
 
-    # Jenkins Settings
-    copy: src=files/org.jvnet.hudson.plugins.SbtPluginBuilder.xml dest=/var/lib/jenkins owner=jenkins group=jenkins mode=0644
-
-    # Add SSH Key
-    - authorized_key: user=jenkins key=../repoman.ssh.pub
+# Add SSH Key
+- authorized_key: user=jenkins key=../repoman.ssh.pub
 

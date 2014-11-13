@@ -1,0 +1,5 @@
+---
+- name: BigSense Repository Server
+  hosts: repo
+  roles:
+   - repo

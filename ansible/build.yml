@@ -1,0 +1,19 @@
+---
+- name: BigSense Build Server
+  hosts: build
+  roles:
+   - ansible-jenkins
+   - build
+  vars:
+    plugins:
+      - 'sbt'
+      - 'git'
+      - 'ssh'
+      - 'scp'
+    port: 8080
+    prefix: '/build'
+    email:
+      smtp_host: 'mail.bigsense.io'
+      smtp_ssl: 'true'
+      default_email_suffix: '@bigsense.io'
+
