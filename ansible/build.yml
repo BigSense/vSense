@@ -1,6 +1,7 @@
 ---
 - name: BigSense Build Server
   hosts: build
+  sudo: true
   roles:
    - ansible-jenkins
    - build

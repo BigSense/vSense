@@ -1,5 +1,10 @@
 ---
 - name: BigSense Repository Server
   hosts: repo
+  sudo: true
+  vars_files:
+    - ../environment.yml
   roles:
-   - repo
+   - { role: repo, x: $from_environment }
+
+
