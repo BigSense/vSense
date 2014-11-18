@@ -10,6 +10,8 @@
 # Jenkins Settings
 - copy: src=org.jvnet.hudson.plugins.SbtPluginBuilder.xml dest=/var/lib/jenkins owner=jenkins group=jenkins mode=0644
 
-# Add SSH Key
-- authorized_key: user=jenkins key="{{ lookup('file','../repoman.ssh.pub') }}"
+# Generate SSH Key
+- user: name=jenkins generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa
+- fetch: src=/var/lib/jenkins/.ssh/id_dsa.pub dest=../jenkins.ssh.pub fail_on_missing=true flat=true
+
 

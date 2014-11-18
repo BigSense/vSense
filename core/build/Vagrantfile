@@ -15,15 +15,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
-  config.vm.define "repo" do |repo|
-    repo.vm.network :private_network, ip: vars.ip('repository')
-    repo.vm.hostname = vars.hostname('repository')
-    repo.hostmanager.aliases = vars.aliases('repository')
-    repo.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/repo.yml"
-    end
-  end
-
   config.vm.define "build" do |build|
     build.vm.network :private_network, ip: vars.ip('build')
     build.vm.hostname = vars.hostname('build')
@@ -33,6 +24,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     build.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/build.yml"
+    end
+  end
+
+  config.vm.define "repo" do |repo|
+    repo.vm.network :private_network, ip: vars.ip('repository')
+    repo.vm.hostname = vars.hostname('repository')
+    repo.hostmanager.aliases = vars.aliases('repository')
+    repo.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/repo.yml"
     end
   end
 
