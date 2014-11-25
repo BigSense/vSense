@@ -37,7 +37,9 @@
 
 #add publishing script and copy ssh transfer keys
 - copy: src=publish dest={{ repoman_home }} owner=root group=repoman mode=0650
-- authorized_key: user=repoman key={{ lookup('file','../jenkins.ssh.pub') }}
+- copy: src=../jenkins.ssh.pub dest={{ repoman_home }}/.ssh/authorized_keys owner=repoman group=repoman mode=0600
+# Not sure why this doesn't work
+#- authorized_key: user=repoman key={{ lookup('file','/home/sumit/sensespace/vSense/virtual-env/build/jenkins.ssh.pub') }}
 
 # serve repo though nginx
 - template: src=nginx.j2 dest=/etc/nginx/sites-available/repo owner=root group=root mode=0644
