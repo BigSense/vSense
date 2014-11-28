@@ -14,4 +14,17 @@
 - user: name=jenkins generate_ssh_key=yes ssh_key_bits=1024 ssh_key_type=dsa
 - fetch: src=/var/lib/jenkins/.ssh/id_dsa.pub dest=../jenkins.ssh.pub fail_on_missing=true flat=true
 
+# Install/Update Jobs
+
+- template: src=bigsense.jenkins.xml.j2 dest={{ bigsense_job_xml }} owner=root mode=0644
+- stat: "{{ bigsense_jenkins_xml }}"
+  register: bigsense_job_installed
+- shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 update-job BigSense < {{ bigsense_job_xml }}
+  args:
+    when: bigsense_job_installed
+- shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 create-job BigSense < {{ bigsense_job_xml }}
+  args:
+    creates: "{{ bigsense_job_xml }}"
+
+
 

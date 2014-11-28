@@ -1,0 +1,3 @@
+---
+bigsense_job_xml : "/home/repoman/jobs/bigsense.jenkins.xml"
+bigsense_jenkins_xml: /var/lib/jenkins/jobs/BigSense/config.xml

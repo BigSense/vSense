@@ -9,8 +9,7 @@
     plugins:
       - 'sbt'
       - 'git'
-      - 'ssh'
-      - 'scp'
+      - 'postbuild-task'
     port: 8080
     prefix: '/build'
     email:
