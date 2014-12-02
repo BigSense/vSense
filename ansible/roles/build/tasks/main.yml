@@ -16,8 +16,9 @@
 
 # Install/Update Jobs
 
+- file: path={{ bigsense_job_dir }} state=directory owner=root mode=0755
 - template: src=bigsense.jenkins.xml.j2 dest={{ bigsense_job_xml }} owner=root mode=0644
-- stat: "{{ bigsense_jenkins_xml }}"
+- stat: path={{ bigsense_jenkins_xml }}
   register: bigsense_job_installed
 - shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 update-job BigSense < {{ bigsense_job_xml }}
   args:

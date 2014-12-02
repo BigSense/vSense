@@ -2,6 +2,8 @@
 - name: BigSense Build Server
   hosts: build
   sudo: true
+  vars_files:
+    - ../environment.yml
   roles:
    - ansible-jenkins
    - build
