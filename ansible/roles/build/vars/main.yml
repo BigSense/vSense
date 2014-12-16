@@ -2,3 +2,4 @@
 bigsense_job_dir : "/home/repoman/jobs"
 bigsense_job_xml : "{{bigsense_job_dir}}/bigsense.jenkins.xml"
 bigsense_jenkins_xml: /var/lib/jenkins/jobs/BigSense/config.xml
+startup_delay_s: 30
