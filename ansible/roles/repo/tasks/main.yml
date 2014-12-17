@@ -19,17 +19,17 @@
 
 # Create aptly repo db
 - template: src=aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root mode=0644
-  with_items: repos
-- command: aptly repo create -comment="bigsense repository" -config=/home/repoman/{{ item.version }}.aptly {{ item.version }} creates={{ repo_init }}
-  with_items: repos
+  with_items: repos[0]
+- command: aptly repo create -comment="bigsense repository" -component={{ item[1] }} -config=/home/repoman/{{ item[0].version }}.aptly {{ item[0].version }}-{{ item[1] }} creates={{ repo_init }}
+  with_nested: repos
   register: create_repo
   sudo_user: repoman
 - file: path={{ repo_init }} state=touch
   when: create_repo|success
 
 #publish repo
-- shell: aptly -distribution={{ item.version }} -architectures=all -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {{ item.version }} creates={{ publish_init }}
-  with_items: repos
+- shell: aptly -distribution={{ item.version }} -component={{repos[1]|join(',')}} -architectures=all -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {% for i in repos[1] %}{{item.version}}-{{i}} {% endfor %}  creates={{ publish_init }}
+  with_items: repos[0]
   register: publish_repo
   sudo_user: repoman
 - file: path={{ publish_init }} state=touch

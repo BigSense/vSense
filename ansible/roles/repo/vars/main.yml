@@ -1,7 +1,7 @@
 ---
 repos:
-  - { version: trusty, distribution: Ubuntu }
-  - { version: wheezy, distribution: Debian }
+  - [ { version: trusty, distribution: Ubuntu }, { version: wheezy, distribution: Debian } ]
+  - [ stable, testing, nightly ]
 repoman_home: /home/repoman
 repo_init: "{{repoman_home}}/.repoinit"
 publish_init: "{{repoman_home}}/.published"
