@@ -1,19 +1,41 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-BASE=$( cd "$( dirname "$0" )" && pwd )
+import os
+import re
+from glob import glob
 
-deb_ver() {
-  debversion=$(basename $repo)
-  echo "${debversion%.*}"
-}
+homedir = os.path.expanduser('~')
+debs = os.path.join(homedir,'debs')
+components = ['nightly', 'testing', 'stable' ]
 
-for deb in $BASE/debs/*.deb; do
-  for repo in $BASE/*.aptly; do
-    #echo "Adding $(basename deb) to $(deb_ver $repo)"
-    aptly -config=$repo repo add $(deb_ver $repo) $deb
-  done
-done
+def repo_name(config_file):
+    return os.path.basename(config_file).split('.')[0]
 
-for repo in $BASE/*.aptly; do
-  aptly -architectures=all -config=$repo publish update $(deb_ver $repo)
-done
+for deb in glob( os.path.join(debs, '*.deb') ):
+    for repo_config in glob( os.path.join(homedir, '*.aptly') ):
+
+        version = deb.split('_')[1]
+        ends_with_number = re.search(r'\d+$', version)
+
+        if '-' in version:
+            component = 'nightly'
+        elif ends_with_number is None:
+            component = 'testing'
+        else:
+            component = 'stable'
+
+        cmd = 'aptly -config={} repo add {}-{} {}'.format(
+                  repo_config, repo_name(repo_config), component, deb)
+        print(cmd)
+        os.system(cmd)
+
+    os.unlink(deb)
+
+# Can't get -passphrase-file to work
+passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
+
+for repo_config in glob( os.path.join(homedir, '*.aptly') ):
+    cmd = 'aptly -passphrase={} -architectures=all -config={} publish update {}'.format(passphrase, repo_config, repo_name(repo_config))
+    print(cmd)
+    os.system(cmd)
+
