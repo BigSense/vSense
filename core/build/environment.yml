@@ -9,9 +9,9 @@ servers:
   build:
     hostname: build
     ip: 10.11.1.11
-    bigsense_src: http://github.com/sumdog/BigSense
-    bigsense_tester_src: http://github.com/sumdog/BigSenseTester
-    ltsense_src : http://github.com/sumdog/LtSense
+    bigsense_src: http://github.com/BigSense/BigSense
+    bigsense_tester_src: http://github.com/BigSense/BigSenseTester
+    ltsense_src : http://github.com/BigSense/LtSense
 pgp:
   key_type: DSA
   key_length: 1024
