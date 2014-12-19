@@ -16,7 +16,8 @@
 
 # Install/Update Jobs
 
-- file: path={{ bigsense_job_dir }} state=directory owner=root mode=0755
+- file: path={{ job_dir }} state=directory owner=root mode=0755
+
 - template: src=bigsense.jenkins.xml.j2 dest={{ bigsense_job_xml }} owner=root mode=0644
 - stat: path={{ bigsense_jenkins_xml }}
   register: bigsense_job_installed
@@ -26,6 +27,19 @@
 - shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 create-job BigSense < {{ bigsense_job_xml }}
   args:
     creates: "{{ bigsense_job_xml }}"
+
+- template: src=ltsense.jenkins.xml.j2 dest={{ ltsense_job_xml }} owner=root mode=0644
+- stat: path={{ ltsense_jenkins_xml }}
+  register: ltsense_job_installed
+- shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 update-job LtSense < {{ ltsense_job_xml }}
+  args:
+    when: ltsense_job_installed
+- shell: java -jar {{ jenkins.cli_dest }} -s http://localhost:8080 create-job LtSense < {{ ltsense_job_xml }}
+  args:
+    creates: "{{ ltsense_job_xml }}"
+
+
+
 
 
 
