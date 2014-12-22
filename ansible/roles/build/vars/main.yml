@@ -4,4 +4,3 @@ bigsense_job_xml : "{{job_dir}}/bigsense.jenkins.xml"
 bigsense_jenkins_xml: /var/lib/jenkins/jobs/BigSense/config.xml
 ltsense_job_xml : "{{job_dir}}/ltsense.jenkins.xml"
 ltsense_jenkins_xml: /var/lib/jenkins/jobs/LtSense/config.xml
-startup_delay_s: 30
