@@ -4,8 +4,8 @@
 - action: apt update_cache=yes
 - action: apt name=sbt  force=true
 - action: apt name=ruby-dev
-- gem: name=fpm state=present
-- gem: name=git state=present
+- gem: name=fpm state=present user_install=no
+- gem: name=git state=present user_install=no
 
 # Jenkins Settings
 - copy: src=org.jvnet.hudson.plugins.SbtPluginBuilder.xml dest=/var/lib/jenkins owner=jenkins group=jenkins mode=0644
