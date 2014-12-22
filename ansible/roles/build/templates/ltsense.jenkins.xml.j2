@@ -44,7 +44,7 @@
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
           <script>scp -oStrictHostKeyChecking=no *deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs &#xd;
-ssh -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish&#xd;
+ssh -t -t -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish&#xd;
 rm $WORKSPACE/*.deb</script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>

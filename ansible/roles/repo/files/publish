@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from subprocess import Popen, PIPE
 import os
 import re
 from glob import glob
@@ -10,6 +11,13 @@ components = ['nightly', 'testing', 'stable' ]
 
 def repo_name(config_file):
     return os.path.basename(config_file).split('.')[0]
+
+def run_cmd(cmd):
+    print(cmd)
+    proc = Popen(cmd,stdout=PIPE)
+    for l in iter(proc.stdout.readline, b''):
+        print(l.decode('utf-8'),end='')
+    proc.communicate()
 
 for deb in glob( os.path.join(debs, '*.deb') ):
     for repo_config in glob( os.path.join(homedir, '*.aptly') ):
@@ -24,10 +32,7 @@ for deb in glob( os.path.join(debs, '*.deb') ):
         else:
             component = 'stable'
 
-        cmd = 'aptly -config={} repo add {}-{} {}'.format(
-                  repo_config, repo_name(repo_config), component, deb)
-        print(cmd)
-        os.system(cmd)
+        run_cmd(('aptly','-config={}'.format(repo_config),'repo','add','{}-{}'.format(repo_name(repo_config),component),deb))
 
     os.unlink(deb)
 
@@ -35,7 +40,4 @@ for deb in glob( os.path.join(debs, '*.deb') ):
 passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
 
 for repo_config in glob( os.path.join(homedir, '*.aptly') ):
-    cmd = 'aptly -passphrase={} -architectures=all -config={} publish update {}'.format(passphrase, repo_config, repo_name(repo_config))
-    print(cmd)
-    os.system(cmd)
-
+    run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-architectures=all', '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
