@@ -6,7 +6,7 @@ vSense is a set of Vagrant environments and Ansible playbooks for building full 
 Installation
 ============
 
-vSense depends on Vagrant 1.6+ and VirtualBox, as well as some additional plugins.
+vSense depends on Vagrant 1.6+, Ansible 1.8+ and VirtualBox, as well as some additional vagrant plugins. Check your Linux distribution's package repository for installing Vagrant, Ansible and VirtualBox. Then run the following:
 
 `
 git clone https://github.com/sumdog/vSense
