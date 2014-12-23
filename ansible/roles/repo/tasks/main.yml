@@ -13,6 +13,9 @@
 - user: name=repoman
 - file: path={{ repoman_home }}/debs state=directory owner=repoman group=repoman mode=0775
 
+# Create Web Root
+- file: path={{ webroot }} state=directory owner=repoman group=repoman mode=0755
+
 # Copy and Import PGP Keys
 - copy: src=../bigsense.pub dest={{ repoman_home }} owner=root group=repoman mode=0650
 - copy: src=../bigsense.sec dest={{ repoman_home }} owner=root group=repoman mode=0650
@@ -36,8 +39,7 @@
   register: publish_repo
   sudo_user: repoman
 - file: path={{ publish_init }} state=touch
-  when: publish_repo | success
-- shell: gpg --export -a "BigSensePGPKey" > {{ repoman_home }}/public/bigsense.io.key
+- shell: gpg --export -a "BigSensePGPKey" > {{ webroot }}/bigsense.io.key
   sudo_user: repoman
 
 #add publishing script and copy ssh transfer keys

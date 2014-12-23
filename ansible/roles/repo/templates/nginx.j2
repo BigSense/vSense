@@ -3,10 +3,9 @@ server {
   listen 80 default_server;
   listen [::]:80 default_server ipv6only=on;
 
-  root {{ repoman_home }}/public;
-  server_name repo;
+  root {{ webroot }};
 
-  location /debs {
+  location / {
     autoindex on;
   }
 }
