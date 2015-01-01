@@ -3,7 +3,7 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-require 'vagrantenv'
+require './vagrantenv'
 vars = VagrantEnv.new('environment.yml')
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -29,16 +29,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "ltsense" do |ltsense|
-  end
+  #config.vm.define "ltsense" do |ltsense|
+  #end
 
-  config.vm.define "db" do |db|
-  end
+  #config.vm.define "db" do |db|
+  #end
 
-  config.vm.define "win2012sql" do |win2012sql|
-    config.vm.box = "Windows2012R2"
-    config.vm.communicator = "winrm"
-    config.vm.network "forwarded_port", host: 3389, guest: 3389
-  end
+  #config.vm.define "win2012sql" do |win2012sql|
+  #  config.vm.box = "Windows2012R2"
+  #  config.vm.communicator = "winrm"
+  #  config.vm.network "forwarded_port", host: 3389, guest: 3389
+  #end
 
 end

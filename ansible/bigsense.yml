@@ -1,0 +1,10 @@
+---
+- name: BigSense Server
+  hosts: bigsense
+  sudo: true
+  vars_files:
+    - ../environment.yml
+  roles:
+   - { role: build-host, when: repository.custom == true }
+   - bigsense
+

@@ -97,21 +97,32 @@ class CreateAction < Action
       puts ('Creating Build Environment: %s' % @args[0]).green
       FileUtils.cp_r( File.join(BASE,'core/build/environment.yml'), @env_dir)
 
-    else #default is :run
+    else # default is :run
 
       puts ('Creating Runtime Environment: %s' % @args[0]).green
 
-      #configuration
+      # configuration
 
       env_config = YAML.load_file(File.join(BASE,'core/run/environment.yml'))
+
+      for i in env_config['servers'].keys
+        env_config['servers'][i]['hostname'].sub!('%env%',@options[:environment].to_s)
+      end
+
+      # connected to a build environment?
+
       if not @options[:build].nil?
         build_config = YAML.load_file(File.join(ENVS,@options[:build],"environment.yml"))
-        env_config['repo_host'] = '%s.%s' % [build_config['servers']['repository']['hostname'], build_config['domain']]
+        env_config['repository']['host'] = '%s.%s' % [build_config['servers']['repository']['hostname'], build_config['domain']]
+        env_config['repository']['custom'] = true
+        env_config['repository']['ip'] = build_config['servers']['repository']['ip']
+        env_config['repository']['ip_regex'] = '^' + build_config['servers']['repository']['ip'].gsub('.','\.')
+        env_config['repository']['protocol'] = 'http'
       end
 
       env_config['database'] = @options[:database]
 
-      #files
+      # files
 
       File.open(File.join(@env_dir,'environment.yml'), 'w') do |file|
         file.write(env_config.to_yaml)

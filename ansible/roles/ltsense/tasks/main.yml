@@ -1,4 +1,4 @@
----
+h---
 - name: install and configure ltsense
   hosts: ltsense
   sudo: true

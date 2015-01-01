@@ -1,0 +1,2 @@
+---
+- lineinfile: dest=/etc/hosts regexp={{ repository.ip_regex }} line="{{ repository.ip }} {{ repository.host }}" owner=root group=root mode=0644 state=present
