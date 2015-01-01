@@ -12,7 +12,7 @@
 - name: add bigsense repo key
   apt_key: url={{ apt_key }} state=present
 - name: add bigsense repo
-  apt_repository: repo={{ apt }} state=present
+  apt_repository: repo="{{ apt }}" state=present
 - name: install bigsense
   action: apt name=bigsense force=true
 - name: configure bigsense

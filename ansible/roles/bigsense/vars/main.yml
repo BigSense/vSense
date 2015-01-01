@@ -12,5 +12,5 @@ bigsense:
   securityManager: DisabledSecurityManager
   httpPort: 8181
   server: tomcat
-apt: "deb {{ repository.protocol }}://{{ repository.host }} {{ repository.branch }}/"
+apt: "deb {{ repository.protocol }}://{{ repository.host }}/debs trusty {{ repository.branch }}/"
 apt_key: "{{ repository.protocol }}://{{ repository.host }}/bigsense.io.key"
