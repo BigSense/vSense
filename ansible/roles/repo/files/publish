@@ -40,4 +40,4 @@ for deb in glob( os.path.join(debs, '*.deb') ):
 passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
 
 for repo_config in glob( os.path.join(homedir, '*.aptly') ):
-    run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-architectures=all', '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
+    run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))

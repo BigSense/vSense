@@ -34,7 +34,7 @@
   when: create_repo|success
 
 #publish repo
-- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -distribution={{ item.version }} -component={{repos[1]|join(',')}} -architectures=all -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {% for i in repos[1] %}{{item.version}}-{{i}} {% endfor %}  creates={{ publish_init }}
+- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -distribution={{ item.version }} -component={{repos[1]|join(',')}} -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {% for i in repos[1] %}{{item.version}}-{{i}} {% endfor %}  creates={{ publish_init }}
   with_items: repos[0]
   register: publish_repo
   sudo_user: repoman
