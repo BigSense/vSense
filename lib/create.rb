@@ -41,15 +41,15 @@ class CreateAction < Action
   end
 
   def validate()
-    super  
+    super
 
     #set defaults
     if @options[:environment].nil?
       @options[:environment] = :run
     end
 
-    #build validation rules    
-    if @options[:environment] == :build 
+    #build validation rules
+    if @options[:environment] == :build
       if not @options[:build].nil?
         STDERR.puts "Build environments do not take a -b/--build flag"
         exit 1
@@ -57,7 +57,7 @@ class CreateAction < Action
       if not @options[:database].nil?
         STDERR.puts "Build environments do not take -d/--database flag"
         exit 1
-      end      
+      end
     end
 
     #runtime validation rules
@@ -73,7 +73,7 @@ class CreateAction < Action
       if not DATABASES.include?(@options[:database])
         STDERR.puts "#{@options[:database]} is not a valid database type".red
         exit 1
-      end 
+      end
     end
 
 
@@ -87,8 +87,8 @@ class CreateAction < Action
       STDOUT.puts ('Environment already exists: %s' %[@env_dir]).red
       exit 2
     end
-    
-    FileUtils.mkdir_p @env_dir    
+
+    FileUtils.mkdir_p @env_dir
 
     ## Build Env
 
@@ -106,7 +106,7 @@ class CreateAction < Action
       env_config = YAML.load_file(File.join(BASE,'core/run/environment.yml'))
 
       for i in env_config['servers'].keys
-        env_config['servers'][i]['hostname'].sub!('%env%',@options[:environment].to_s)
+        env_config['servers'][i]['hostname'].sub!('%env%',@args[0])
       end
 
       # connected to a build environment?
