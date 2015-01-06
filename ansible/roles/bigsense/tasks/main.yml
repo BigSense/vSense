@@ -3,6 +3,8 @@
 
 - name: install postgresql
   action: apt name=postgresql
+- name: install postgis
+  action: apt name=postgresql-9.3-postgis-2.1
 - name: enable postgresql
   service: name=postgresql enabled=yes state=started
 
@@ -16,7 +18,7 @@
 - name: install bigsense
   action: apt name=bigsense force=true
 - name: configure bigsense
-  template: src=templates/application.conf.j2 dest=/etc/bigsense/application.conf owner=root group=bigsense mode=0640
+  template: src=bigsense.conf.j2 dest=/etc/bigsense/bigsense.conf owner=root group=bigsense mode=0640
 
 - name: check if postgresql has been initalized for bigsense
   stat: path={{ pginit_file }}
@@ -24,7 +26,7 @@
 
 - name: initalize postgresql
   sudo_user: postgres
-  shell: psql < /etc/bigsense/initalize-pgsql.sql
+  shell: psql < /etc/bigsense/schema/initalize-pgsql.sql
   when: pginit.stat.exists == False
   register: pginit_result
 
