@@ -1,0 +1,4 @@
+# Safe-restart Jenkins
+- name: Reload Nginx
+  sudo: yes
+  service: name=nginx enabled=yes state=reloaded

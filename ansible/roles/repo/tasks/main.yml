@@ -52,6 +52,9 @@
 
 # serve repo though nginx
 - template: src=nginx.j2 dest=/etc/nginx/sites-available/repo owner=root group=root mode=0644
+  notify: 'Reload Nginx'
 - file: src=/etc/nginx/sites-available/repo dest=/etc/nginx/sites-enabled/repo owner=root group=root state=link
+  notify: 'Reload Nginx'
 - file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: 'Reload Nginx'
 - service: name=nginx enabled=yes state=started
