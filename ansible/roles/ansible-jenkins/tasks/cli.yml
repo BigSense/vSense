@@ -10,10 +10,16 @@
   sudo: yes
   action: file path={{ jenkins_dest }} state=directory
 
+# Install CLI wget script
+- name: Install Jenkins CLI Download Script
+  sudo: yes
+  template: src=get-cli.sh.j2 dest={{ jenkins.cli_wget_script }} owner=root group=root mode=0500
+
 # Get Jenkins CLI from localhost
 - name: Get Jenkins CLI
   sudo: yes
-  action: get_url url=http://localhost:8080/jnlpJars/jenkins-cli.jar dest={{ jenkins.cli_dest }} mode=0440
+#  action: get_url url=http://localhost:8080/jnlpJars/jenkins-cli.jar dest={{ jenkins.cli_dest }} mode=0440
+  action: command {{ jenkins.cli_wget_script }}
 
 # Get latest Jenkins update file
 - name: Get Jenkins updates

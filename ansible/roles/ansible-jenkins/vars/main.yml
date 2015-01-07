@@ -11,4 +11,5 @@ jenkins:
       - 'git'
       - 'curl'
   cli_dest: '{{ jenkins_dest }}/jenkins-cli.jar' # Jenkins CLI destination
+  cli_wget_script: '{{ jenkins_dest }}/get-cli.sh'
   updates_dest: '{{ jenkins_dest }}/updates_jenkins.json' # Jenkins updates file

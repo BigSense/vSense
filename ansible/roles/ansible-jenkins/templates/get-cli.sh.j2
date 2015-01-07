@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Ansible's get_url doesn't have a retry option and Jenkins will return a 503
+# if it's not up set. This script guarantees we get the CLI jar without having
+# to provision twice
+
+# taken from http://superuser.com/questions/493640/how-to-retry-connections-with-wget
+
+if [ ! -f {{ jenkins.cli_dest }} ]; then
+  while [ 1 ]; do
+    wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 \
+      --continue -O {{ jenkins.cli_dest }} http://localhost:8080/jnlpJars/jenkins-cli.jar
+      if [ $? = 0 ]; then
+        chmod 0440 {{ jenkins.cli_dest }}
+        break;
+      fi;
+      sleep 1s;
+  done;
+fi;
