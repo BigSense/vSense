@@ -27,9 +27,13 @@ class DestroyAction < Action
   end
 
   def validate()
-    super     
+    super
     if !@options[:force]
       STDERR.puts '-f required to delete an environment'.red
+      exit 1
+    end
+    if !File.exists?(@env_dir)
+      STDERR.puts "Environment #{@args[0]} not found".red
       exit 1
     end
   end
@@ -37,12 +41,7 @@ class DestroyAction < Action
   def run()
     super
 
-    # TODO: shutdown env if running
-    if !File.exists?(@env_dir)
-      STDERR.puts "Environment #{@args[0]} not found".red
-      exit 1
-    end
-
+    Vagrant.run_cmd(@env_dir, 'destroy -f')
     FileUtils.rm_rf(@env_dir)
     Environment::del(@args[0])
 

@@ -3,23 +3,25 @@
 require_relative 'lib/colours'
 require_relative 'lib/create'
 require_relative 'lib/destroy'
+require_relative 'lib/vagrant'
 require_relative 'lib/env'
 require_relative 'lib/genkey'
 
 usage = <<-USAGE
-Usage: vsense [ create | list | genkeys | destroy | start | stop ]
+Usage: vsense [ create | list | genkeys | destroy | start | stop | status ]
 
 \t create  - creates a new environment
 \t list    - list of all environments
 \t genkeys - generate PGP keys for a build environment
-\t destroy - stop and delete all files associated with an environment 
+\t destroy - stop and delete all files associated with an environment
 \t start   - start an environment
-\t stop    - stop an environment 
+\t stop    - stop an environment
+\t status  - display the status of an environment
 
 add -h or --help for additional argumnets for each command
 USAGE
 
-subcommands = [ 'create' , 'list' , 'genkeys' , 'destroy' , 'start' , 'stop' ]
+subcommands = [ 'create' , 'list' , 'genkeys' , 'destroy' , 'start' , 'stop' , 'status' ]
 
 if !subcommands.include? ARGV[0]
   print usage
@@ -32,11 +34,13 @@ case ARGV[0]
     action = CreateAction.new(ARGV)
   when 'list'
     Environment.list
-    exit 0 
+    exit 0
   when 'genkeys'
     action = GenKeyAction.new(ARGV)
   when 'destroy'
   	action = DestroyAction.new(ARGV)
+  when 'start', 'stop', 'status'
+    action = Vagrant.new(ARGV)
 end
 
 action.run

@@ -9,12 +9,14 @@ class Action
   @args = nil
   @opts = nil
   @env_dir  = nil
+  @command = nil
 
   def initialize(args)
+    @command = args[0]
     @args = args.drop(1)
+    @env_dir  = (@args.length > 0) ? File.join(ENVS,@args.last) : nil
     set_options
     validate
-    @env_dir  = File.join(ENVS,@args[0])
   end
 
   def set_options()
@@ -24,7 +26,7 @@ class Action
     YAML.load_file(File.join(ENVS,@args[0],'environment.yml'))
   end
 
-  def validate()  
+  def validate()
     if @opts.nil?
       STDERR.puts "Option Parser for Action is Unimplemented"
       exit 4
@@ -44,7 +46,7 @@ class Action
     elsif @args.length != 1
       STDERR.puts ('Unknown trailing arguments: %s' %[@args.drop(1)]).red
       exit 1
-    end        
+    end
   end
 
   def run()
