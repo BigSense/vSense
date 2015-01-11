@@ -6,7 +6,7 @@ repository:
   custom: false
   protocol: https
   host: repo.bigsense.io
-  branch: testing
+  stage: stable
 servers:
   bigsense:
     hostname: bigsense-%env%
