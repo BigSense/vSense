@@ -7,6 +7,10 @@ class CreateAction < Action
 
   DATABASES = [:mysql,:postgres,:mssql]
 
+  RUN_OS = [:ubuntu, :debian, :centos, :opensuse]
+
+  STAGES = [:stable, :testing, :nightly]
+
 ## Arguments
 
   def set_options()
@@ -14,7 +18,7 @@ class CreateAction < Action
     @options = {}
     @opts = OptionParser.new do |opts|
 
-      opts.banner = 'Usage: vsense create [-f] [-e (build|run)] [-b <build environment name>] [-d (mysql|postgres|mssql)] <environment name>'
+      opts.banner = 'Usage: vsense create [-f <gls>] [-e <env_type>] [-b <build_env>] [-d <db>] [-o <os>] [-s <stage>] <environment name>'
 
       opts.on_tail("-h", "--help", "Show this message") do
         STDERR.puts opts
@@ -33,6 +37,14 @@ class CreateAction < Action
         @options[:database] = db
       end
 
+      opts.on('-o','--os RUN_OS', RUN_OS,'Runtime OS/distribution (ubuntu|debian|centos|opensuse) [default: ubuntu]') do |os|
+        @options[:os] = os
+      end
+
+      opts.on('-s','--stage STAGE',STAGES,'Stage (nightly|testing|stable) [default: stable]') do |stage|
+        @options[:stage] = stage
+      end
+
       opts.on('-b','--build BUILD','Use a local build environment [default: use official bigsense.io]') do |build|
         @options[:build] = build
       end
@@ -43,24 +55,35 @@ class CreateAction < Action
   def validate()
     super
 
-    #set defaults
+    #set global defaults
+
     if @options[:environment].nil?
       @options[:environment] = :run
     end
 
-    #build validation rules
+    # flags not used on build environments
+
     if @options[:environment] == :build
-      if not @options[:build].nil?
-        STDERR.puts "Build environments do not take a -b/--build flag"
-        exit 1
-      end
-      if not @options[:database].nil?
-        STDERR.puts "Build environments do not take -d/--database flag"
-        exit 1
+      @options.each do |key,val|
+        if not ([key[0]] & ['b','d','s','o']).empty?
+          STDERR.puts "Build environment do not take a --#{key} flag".red
+          exit 1
+        end
       end
     end
 
+
+    # Run defaults
+
+    if @options[:stage].nil?
+      @options[:stage] = 'stable'
+    end
+    if @options[:os].nil?
+      @options[:os] = 'ubuntu'
+    end
+
     #runtime validation rules
+
     if @options[:environment] == :run
       if not @options[:build].nil? and not Environment.build_envs().include?(@options[:build])
         STDERR.puts "#{@options[:build]} is not a valid build environment".red
@@ -118,7 +141,10 @@ class CreateAction < Action
         env_config['repository']['protocol'] = 'http'
       end
 
-      env_config['database'] = @options[:database]
+      env_config['database'] = @options[:database].to_s
+      env_config['servers']['bigsense']['os'] = @options[:os].to_s
+      env_config['servers']['ltsense']['os'] = @options[:os].to_s
+      env_config['repository']['stage'] = @options[:stage].to_s
 
       # files
 
