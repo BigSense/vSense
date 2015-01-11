@@ -28,6 +28,12 @@ class Vagrant < Action
       STDERR.puts "Environment #{@args[0]} not found".red
       exit 1
     end
+    if @command == 'start' and settings()['type'] == 'build'
+      if !File.exists?(File.join(@env_dir,'bigsense.pub')) or !File.exists?(File.join(@env_dir,'bigsense.sec'))
+        STDERR.puts "Build PGP Keys are missing. You must run ./vsense genkeys #{@args[0]}".red
+        exit 1
+      end
+    end
   end
 
   def run()

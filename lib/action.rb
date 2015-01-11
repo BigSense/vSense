@@ -14,8 +14,9 @@ class Action
   def initialize(args)
     @command = args[0]
     @args = args.drop(1)
-    @env_dir  = (@args.length > 0) ? File.join(ENVS,@args.last) : nil
     set_options
+    optparse
+    @env_dir  = (@args.length > 0) ? File.join(ENVS,@args[0]) : nil
     validate
   end
 
@@ -26,7 +27,7 @@ class Action
     YAML.load_file(File.join(ENVS,@args[0],'environment.yml'))
   end
 
-  def validate()
+  def optparse()
     if @opts.nil?
       STDERR.puts "Option Parser for Action is Unimplemented"
       exit 4
@@ -37,7 +38,9 @@ class Action
       STDERR.puts @opts
       exit 1
     end
+  end
 
+  def validate()
     #Every action requires an environment name to act on
     # if this changes, we can add an option boolean parameter
     if @args.length == 0
