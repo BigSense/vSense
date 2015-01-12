@@ -1,38 +1,6 @@
-- name: update apt cache
-  action: apt update_cache=yes
+---
+- include: deb-system.yml
+  when: ansible_distribution in [ 'Debian', 'Ubuntu' ]
 
-- name: install postgresql
-  action: apt name=postgresql
-- name: install postgis
-  action: apt name=postgresql-9.3-postgis-2.1
-- name: enable postgresql
-  service: name=postgresql enabled=yes state=started
-
-- name: install openjdk-7
-  action: apt name=openjdk-7-jre
-
-- name: add bigsense repo key
-  apt_key: url={{ apt_key }} state=present
-- name: add bigsense repo
-  apt_repository: repo="{{ apt }}" state=present
-- name: install bigsense
-  action: apt name=bigsense force=true
-- name: configure bigsense
-  template: src=bigsense.conf.j2 dest=/etc/bigsense/bigsense.conf owner=root group=bigsense mode=0640
-
-- name: check if postgresql has been initalized for bigsense
-  stat: path={{ pginit_file }}
-  register: pginit
-
-- name: initalize postgresql
-  sudo_user: postgres
-  shell: psql < /etc/bigsense/schema/initalize-pgsql.sql
-  when: pginit.stat.exists == False
-  register: pginit_result
-
-- name: mark initilization complete
-  file: path={{ pginit_file }} state=touch
-  when: pginit_result|success
-
-- name: enable and start bigsense
-  service: name=bigsense enabled=yes state=started
+- include: rpm-system.yml
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]

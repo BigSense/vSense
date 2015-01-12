@@ -17,6 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "bigsense" do |bigsense|
 
+    bigsense.vm.box = vars.vbox_image('bigsense')
     bigsense.vm.network :private_network, ip: vars.ip('bigsense')
     bigsense.vm.hostname = vars.hostname('bigsense')
     bigsense.hostmanager.aliases = vars.aliases('bigsense')
@@ -29,8 +30,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  #config.vm.define "ltsense" do |ltsense|
-  #end
+  config.vm.define "ltsense" do |ltsense|
+    ltsense.vm.box = vars.vbox_image('ltsense')
+    ltsense.vm.network :private_network, ip: vars.ip('ltsense')
+    ltsense.vm.hostname = vars.hostname('ltsense')
+    ltsense.hostmanager.aliases = vars.aliases('ltsense')
+    ltsense.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/ltsense.yml"
+    end
+  end
 
   #config.vm.define "db" do |db|
   #end

@@ -20,4 +20,17 @@ class VagrantEnv
     ['%s.%s' %[@vars['servers'][server]['hostname'],@vars['domain']]]
   end
 
+  def vbox_image(server)
+    case @vars['servers'][server]['os']
+      when 'ubuntu'
+        return 'ubuntu/trusty64'
+      when 'debian'
+        return 'box-cutter/debian77'
+      when 'centos'
+        return 'hansode/centos-7.0.1406-x86_64'
+      when 'opensuse'
+        return 'alchemy/opensuse-13.2-64'
+    end
+  end
+
 end
