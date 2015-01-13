@@ -141,7 +141,7 @@ class CreateAction < Action
         env_config['repository']['protocol'] = 'http'
       end
 
-      env_config['database'] = @options[:database].to_s
+      env_config['database']['type'] = @options[:database].to_s
       env_config['servers']['bigsense']['os'] = @options[:os].to_s
       env_config['servers']['ltsense']['os'] = @options[:os].to_s
       env_config['repository']['stage'] = @options[:stage].to_s

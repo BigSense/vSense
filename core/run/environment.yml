@@ -16,3 +16,13 @@ servers:
     hostname: ltsense-%env%
     os: ubuntu
     ip: 10.11.1.21
+  database:
+    hostname: db-%env%
+    ip: 10.11.1.22
+database:
+  type: postgres
+  name: bigsense
+  username: bigsense
+  password: bigsense
+  ddl_username: bigsense_ddl
+  ddl_password: bigsense_ddl

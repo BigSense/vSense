@@ -1,0 +1,99 @@
+CREATE DATABASE [{{ database.name }}]
+GO
+ALTER DATABASE [{{ database.name }}] SET COMPATIBILITY_LEVEL = 100
+GO
+ALTER DATABASE [{{ database.name }}] SET ANSI_NULL_DEFAULT OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET ANSI_NULLS OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET ANSI_PADDING OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET ANSI_WARNINGS OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET ARITHABORT OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET AUTO_CLOSE OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET AUTO_CREATE_STATISTICS ON
+GO
+ALTER DATABASE [{{ database.name }}] SET AUTO_SHRINK OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET AUTO_UPDATE_STATISTICS ON
+GO
+ALTER DATABASE [{{ database.name }}] SET CURSOR_CLOSE_ON_COMMIT OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET CURSOR_DEFAULT  GLOBAL
+GO
+ALTER DATABASE [{{ database.name }}] SET CONCAT_NULL_YIELDS_NULL OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET NUMERIC_ROUNDABORT OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET QUOTED_IDENTIFIER OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET RECURSIVE_TRIGGERS OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET  DISABLE_BROKER
+GO
+ALTER DATABASE [{{ database.name }}] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET DATE_CORRELATION_OPTIMIZATION OFF
+GO
+ALTER DATABASE [{{ database.name }}] SET PARAMETERIZATION SIMPLE
+GO
+ALTER DATABASE [{{ database.name }}] SET  READ_WRITE
+GO
+ALTER DATABASE [{{ database.name }}] SET RECOVERY FULL
+GO
+ALTER DATABASE [{{ database.name }}] SET  MULTI_USER
+GO
+ALTER DATABASE [{{ database.name }}] SET PAGE_VERIFY CHECKSUM
+GO
+USE [{{ database.name }}]
+GO
+IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY') ALTER DATABASE [{{ database.name }}] MODIFY FILEGROUP [PRIMARY] DEFAULT
+GO
+
+--Create DBO User
+
+USE [{{ database.name }}]
+GO
+CREATE LOGIN [{{ database.ddl_username }}] WITH PASSWORD=N'{{ database.ddl_password }}', DEFAULT_DATABASE=[{{ database.name }}], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+--Add DBO Role to Insrance
+
+USE [{{ database.name }}]
+GO
+CREATE USER [{{ database.ddl_username }}] FOR LOGIN [{{ database.ddl_username }}]
+GO
+USE [{{ database.name }}]
+GO
+EXEC sp_addrolemember N'db_owner', N'{{ database.ddl_username }}'
+GO
+
+--Create Standard User
+
+USE [{{ database.name }}]
+GO
+CREATE LOGIN [{{ database.username }}] WITH PASSWORD=N'{{ database.password }}', DEFAULT_DATABASE=[{{ database.name }}], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+USE [{{ database.name }}]
+GO
+CREATE USER [{{ database.username }}] FOR LOGIN [{{ database.username }}]
+GO
+USE [{{ database.name }}]
+GO
+USE [{{ database.name }}]
+GO
+EXEC sp_addrolemember N'db_datareader', N'{{ database.username }}'
+EXEC sp_addrolemember N'db_datawriter', N'{{ database.username }}'
+GO
+GO
+
+
+CREATE TABLE ddl_info (
+	id BIGINT IDENTITY(1,1) PRIMARY KEY,
+	version INT,
+	installed rowversion
+);

@@ -40,8 +40,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  #config.vm.define "db" do |db|
-  #end
+  config.vm.define "database" do |database|
+    database.vm.box = vars.vbox_image('database')
+    database.vm.network :private_network, ip: vars.ip('database')
+    database.vm.hostname = vars.hostname('database')
+    database.hostmanager.aliases = vars.aliases('database')
+    database.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/database.yml"
+    end
+  end
 
   #config.vm.define "win2012sql" do |win2012sql|
   #  config.vm.box = "Windows2012R2"

@@ -1,0 +1,30 @@
+---
+- name: install postgresql
+  action: apt name=postgresql
+
+- name: install postgis
+  action: apt name=postgresql-9.3-postgis-2.1
+
+- name: enable postgresql
+  service: name=postgresql enabled=yes state=started
+
+- name: check if postgresql has been initalized for bigsense
+  stat: path={{ pginit_file }}
+  register: pginit
+
+- name: copy initial DDL template
+  template: src=init-pgsql.sql.j2 dest={{ ddl_file }} owner=postgres mode=0400
+  when: pginit.stat.exists == False
+
+- name: initalize postgresql
+  sudo_user: postgres
+  shell: psql < {{ ddl_file }}
+  when: pginit.stat.exists == False
+  register: pginit_result
+
+- name: mark initilization complete
+  file: path={{ pginit_file }} state=touch
+  when: pginit_result|success
+
+- name: delete DDL template
+  file: src={{ ddl_file }} state=absent

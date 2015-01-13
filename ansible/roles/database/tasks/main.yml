@@ -1,0 +1,6 @@
+---
+- include: postgres.yml
+  when: database.type == 'postgres'
+
+- include: mysql.yml
+  when: database.type == 'mysql'

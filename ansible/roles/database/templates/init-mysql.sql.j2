@@ -1,0 +1,20 @@
+CREATE DATABASE {{ database.name }};
+GRANT ALL ON {{ database.name }}.* TO '{{ database.ddl_username }}'@'localhost' IDENTIFIED BY '{{ database.ddl_password }}';
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON {{ database.name }}.* TO '{{ database.username }}'@'localhost' IDENTIFIED BY '{{ database.password }}';
+
+USE {{ database.name }};
+CREATE TABLE ddl_info( id INT auto_increment PRIMARY KEY, version INT, installed TIMESTAMP );
+
+delimiter $$
+drop function if exists `isnumeric` $$
+create function `isnumeric` (s varchar(255)) returns int deterministic
+begin
+set @match =
+   '^(([0-9+-.$]{1})|([+-]?[$]?[0-9]*(([.]{1}[0-9]*)|([.]?[0-9]+))))$';
+
+return if(s regexp @match, 1, 0);
+end $$
+
+delimiter ;
+
+GRANT EXECUTE ON PROCEDURE {{ database.name }}.isnumeric TO '{{ database.username }}'@'localhost'

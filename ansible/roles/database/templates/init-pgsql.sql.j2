@@ -1,0 +1,29 @@
+CREATE USER {{ database.ddl_username }} CREATEDB PASSWORD '{{ database.ddl_password }}';
+CREATE USER {{ database.username }} PASSWORD '{{ database.password }}';
+
+CREATE DATABASE {{ database.name }}
+  WITH OWNER = {{ database.ddl_username }}
+       ENCODING = 'UTF8';
+
+
+GRANT ALL ON DATABASE {{ database.name }} to {{ database.username }};
+
+
+\connect {{ database.name }};
+
+CREATE EXTENSION postgis;
+CREATE TABLE ddl_info( id SERIAL, version INT, installed TIMESTAMP );
+
+GRANT SELECT,INSERT,UPDATE,DELETE ON ddl_info TO {{ database.ddl_username }};
+GRANT USAGE ON SEQUENCE ddl_info_id_seq TO {{ database.ddl_username }};
+
+CREATE OR REPLACE FUNCTION isnumeric(text) RETURNS BOOLEAN AS $$
+DECLARE x NUMERIC;
+BEGIN
+    x = $1::NUMERIC;
+    RETURN TRUE;
+EXCEPTION WHEN others THEN
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+

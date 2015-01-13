@@ -1,0 +1,4 @@
+# Restart Bigsense
+- name: Restart BigSense
+  sudo: yes
+  service: name=bigsense enabled=yes state=restarted

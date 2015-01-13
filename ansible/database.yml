@@ -1,0 +1,8 @@
+---
+- name: BigSense Database
+  hosts: database
+  sudo: true
+  vars_files:
+    - ../environment.yml
+  roles:
+   - database

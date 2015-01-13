@@ -1,0 +1,4 @@
+---
+bigsense_opt: /opt/bigsense
+pginit_file: "{{ bigsense_opt }}/db-initalized"
+ddl_file: "{{ bigsense_opt }}/init.sql"
