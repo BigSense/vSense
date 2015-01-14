@@ -2,3 +2,6 @@
 bigsense_opt: /opt/bigsense
 pginit_file: "{{ bigsense_opt }}/db-initalized"
 ddl_file: "{{ bigsense_opt }}/init.sql"
+pg_etc: /etc/postgresql/9.3/main
+pg_hba_conf: "{{ pg_etc }}/pg_hba.conf"
+postgresql_conf: "{{ pg_etc }}/postgresql.conf"

@@ -27,4 +27,17 @@
   when: pginit_result|success
 
 - name: delete DDL template
-  file: src={{ ddl_file }} state=absent
+  file: path={{ ddl_file }} state=absent
+
+- name: add sql connection trust for BigSense server
+  lineinfile: dest={{ pg_hba_conf }}
+    regexp="^host\s+{{ database.name }}\s+{{ database.username }}\s+.*\s+trust$"
+    insertafter="^#\sIPv4\slocal.+"
+    line="host {{ database.name }} {{ database.username }},{{ database.ddl_username }} {{ servers.bigsense.ip }}/32 trust"
+  notify: 'Restart Postgres'
+
+- name: listen on network adapter
+  lineinfile: dest={{ postgresql_conf }}
+    regexp="^.*listen_addresses+.*$"
+    line="listen_addresses = '{{ servers.database.ip }}'"
+  notify: 'Restart Postgres'

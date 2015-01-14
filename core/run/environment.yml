@@ -26,3 +26,8 @@ database:
   password: bigsense
   ddl_username: bigsense_ddl
   ddl_password: bigsense_ddl
+bigsense:
+  environment: development
+  security_manager: DisabledSecurityManager
+  http_port: 8080
+  server: tomcat

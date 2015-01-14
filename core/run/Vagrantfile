@@ -15,6 +15,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
+  config.vm.define "database" do |database|
+    database.vm.network :private_network, ip: vars.ip('database')
+    database.vm.hostname = vars.hostname('database')
+    database.hostmanager.aliases = vars.aliases('database')
+    database.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/database.yml"
+    end
+  end
+
   config.vm.define "bigsense" do |bigsense|
 
     bigsense.vm.box = vars.vbox_image('bigsense')
@@ -37,16 +46,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ltsense.hostmanager.aliases = vars.aliases('ltsense')
     ltsense.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/ltsense.yml"
-    end
-  end
-
-  config.vm.define "database" do |database|
-    database.vm.box = vars.vbox_image('database')
-    database.vm.network :private_network, ip: vars.ip('database')
-    database.vm.hostname = vars.hostname('database')
-    database.hostmanager.aliases = vars.aliases('database')
-    database.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/database.yml"
     end
   end
 

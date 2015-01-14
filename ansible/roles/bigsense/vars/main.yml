@@ -1,16 +1,8 @@
 ---
-pginit_file: /etc/bigsense/.initalized
-bigsense:
-  dbms: pgsql
-  environment: development
-  connectionString: "jdbc:postgresql://localhost:5432/bigsense"
-  dbDriver: org.postgresql.Driver
-  dbUser: db_bigsense
-  dbPass: bigsense
-  dboUser: db_bigsense_ddl
-  dboPass: bigsenseDDL
-  securityManager: DisabledSecurityManager
-  httpPort: 8181
-  server: tomcat
+#bigsense:
+#  environment: development
+#  security_manager: DisabledSecurityManager
+#  http_port: 8181
+#  server: tomcat
 apt: "deb {{ repository.protocol }}://{{ repository.host }}/debs trusty {{ repository.stage }}"
 apt_key: "{{ repository.protocol }}://{{ repository.host }}/bigsense.io.key"

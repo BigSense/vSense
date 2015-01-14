@@ -6,5 +6,5 @@
     - ../environment.yml
   roles:
    - { role: build-host, when: repository.custom == true }
-   - bigsense
+   - { role: bigsense, x: $from_environment }
 

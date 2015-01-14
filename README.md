@@ -33,7 +33,7 @@ Next you can start the environment:
 ./vsense start staging
 `
 
-You should watch the Vagrant VMs start and the Ansible provisioning scripts run. You may be prompted for your password as the vagrant-hostmanager plugin will need root privilages to update your */etc/hosts* file. When finished, you'll have three VMs. The *ltsense-staging* VM will start transmitting randomly generated temperatures to the *bigsense-staging* VM. Assuming you're using the default *environment.yml*, you should be able to view the take sensor data by going to the following web address:
+The Vagrant VMs start and the Ansible provisioning scripts will run. You may be prompted for your password as the vagrant-hostmanager plugin will need root privilages to update your */etc/hosts* file. When finished, you'll have three VMs. The *ltsense-staging* VM will start transmitting randomly generated temperatures to the *bigsense-staging* VM. Assuming you're using the default *environment.yml*, you should be able to view the take sensor data by going to the following web address:
 
 `http://bigsense-staging.internal:8080/api/Query/Latest/100.txt`
 

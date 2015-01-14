@@ -1,4 +1,6 @@
 ---
+- file: path={{ bigsense_opt }} state=directory owner=root mode=0755
+
 - include: postgres.yml
   when: database.type == 'postgres'
 
