@@ -25,7 +25,7 @@ class VagrantEnv
       when 'ubuntu'
         return 'ubuntu/trusty64'
       when 'debian'
-        return 'box-cutter/debian77'
+        return 'zauberpony/wheezy'
       when 'centos'
         return 'hansode/centos-7.0.1406-x86_64'
       when 'opensuse'
