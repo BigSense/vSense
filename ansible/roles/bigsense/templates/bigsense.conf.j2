@@ -9,7 +9,7 @@ connectionString=jdbc:mysql://{{ servers.database.hostname }}:3306/{{ database.n
 dbDriver=com.mysql.jdbc.Driver
 dbms=mysql
 {% endif %}
-{% if database.type == 'mysql' %}
+{% if database.type == 'mssql' %}
 connectionString=jdbc:jtds:sqlserver://{{ servers.database.hostname }}\instance:port/{{ database.name }}
 dbDriver=net.sourceforge.jtds.jdbc.Driver
 dbms=mssql

@@ -1,6 +1,6 @@
 CREATE DATABASE {{ database.name }};
-GRANT ALL ON {{ database.name }}.* TO '{{ database.ddl_username }}'@'localhost' IDENTIFIED BY '{{ database.ddl_password }}';
-GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON {{ database.name }}.* TO '{{ database.username }}'@'localhost' IDENTIFIED BY '{{ database.password }}';
+GRANT ALL ON {{ database.name }}.* TO '{{ database.ddl_username }}'@'{{ servers.bigsense.hostname }}' IDENTIFIED BY '{{ database.ddl_password }}';
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON {{ database.name }}.* TO '{{ database.username }}'@'{{ servers.bigsense.hostname }}' IDENTIFIED BY '{{ database.password }}';
 
 USE {{ database.name }};
 CREATE TABLE ddl_info( id INT auto_increment PRIMARY KEY, version INT, installed TIMESTAMP );
@@ -17,4 +17,4 @@ end $$
 
 delimiter ;
 
-GRANT EXECUTE ON PROCEDURE {{ database.name }}.isnumeric TO '{{ database.username }}'@'localhost'
+GRANT EXECUTE ON PROCEDURE {{ database.name }}.isnumeric TO '{{ database.username }}'@'{{ servers.bigsense.hostname }}'

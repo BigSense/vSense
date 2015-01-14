@@ -1,0 +1,32 @@
+---
+- name: install mysql
+  action: apt name=mysql-server
+
+- name: enable mysql
+  service: name=mysql enabled=yes state=started
+
+- name: check if mysql has been initalized for bigsense
+  stat: path={{ dbinit_file }}
+  register: dbinit
+
+- name: copy initial DDL template
+  template: src=init-mysql.sql.j2 dest={{ ddl_file }} owner=root mode=0400
+  when: dbinit.stat.exists == False
+
+- name: initalize mysql
+  shell: mysql < {{ ddl_file }}
+  when: dbinit.stat.exists == False
+  register: dbinit_result
+
+- name: mark initilization complete
+  file: path={{ dbinit_file }} state=touch
+  when: dbinit_result|success
+
+- name: delete DDL template
+  file: path={{ ddl_file }} state=absent
+
+- name: listen on network adapter
+  lineinfile: dest={{ my_conf }}
+    regexp="^.*bind-address+.*$"
+    line="bind-address = {{ servers.database.ip }}"
+  notify: 'Restart MySQL'

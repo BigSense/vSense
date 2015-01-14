@@ -9,22 +9,22 @@
   service: name=postgresql enabled=yes state=started
 
 - name: check if postgresql has been initalized for bigsense
-  stat: path={{ pginit_file }}
-  register: pginit
+  stat: path={{ dbinit_file }}
+  register: dbinit
 
 - name: copy initial DDL template
   template: src=init-pgsql.sql.j2 dest={{ ddl_file }} owner=postgres mode=0400
-  when: pginit.stat.exists == False
+  when: dbinit.stat.exists == False
 
 - name: initalize postgresql
   sudo_user: postgres
   shell: psql < {{ ddl_file }}
-  when: pginit.stat.exists == False
-  register: pginit_result
+  when: dbinit.stat.exists == False
+  register: dbinit_result
 
 - name: mark initilization complete
-  file: path={{ pginit_file }} state=touch
-  when: pginit_result|success
+  file: path={{ dbinit_file }} state=touch
+  when: dbinit_result|success
 
 - name: delete DDL template
   file: path={{ ddl_file }} state=absent
