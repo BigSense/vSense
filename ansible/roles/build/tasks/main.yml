@@ -4,6 +4,7 @@
 - action: apt update_cache=yes
 - action: apt name=sbt  force=true
 - action: apt name=ruby-dev
+- action: apt name=rpm
 - gem: name=fpm state=present user_install=no
 - gem: name=git state=present user_install=no
 

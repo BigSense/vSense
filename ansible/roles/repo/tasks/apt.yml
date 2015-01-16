@@ -1,0 +1,40 @@
+---
+# add aptly repo
+- apt_key: keyserver=keys.gnupg.net id=2A194991
+- apt_repository: repo='deb http://repo.aptly.info/ squeeze main' state=present
+
+# Install packages
+
+- action: apt name=dpkg-sig
+- action: apt name=aptly
+
+# Create Repo Management User and set permissions
+
+- file: path={{ repoman_home }}/debs/wheezy state=directory owner=repoman group=repoman mode=0775
+- file: path={{ repoman_home }}/debs/trusty state=directory owner=repoman group=repoman mode=0775
+
+# Create aptly repo db
+
+- template: src=aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root mode=0644
+  with_items: repos[0]
+- command: aptly repo create -comment="bigsense repository" -component={{ item[1] }} -config=/home/repoman/{{ item[0].version }}.aptly {{ item[0].version }}-{{ item[1] }} creates={{ repo_init }}
+  with_nested: repos
+  register: create_repo
+  sudo_user: repoman
+- file: path={{ repo_init }} state=touch
+  when: create_repo|success
+
+#publish repo
+
+- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -distribution={{ item.version }} -component={{repos[1]|join(',')}} -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {% for i in repos[1] %}{{item.version}}-{{i}} {% endfor %}  creates={{ publish_init }}
+  with_items: repos[0]
+  register: publish_repo
+  sudo_user: repoman
+- file: path={{ publish_init }} state=touch
+- shell: gpg --export -a "BigSensePGPKey" > {{ webroot }}/bigsense.io.key
+  sudo_user: repoman
+- file: src={{ repoman_home }}/public path={{ webroot }}/debs state=link
+
+
+
+

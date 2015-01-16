@@ -1,54 +1,19 @@
 ---
-# add aptly repo
-- apt_key: keyserver=keys.gnupg.net id=2A194991
-- apt_repository: repo='deb http://repo.aptly.info/ squeeze main' state=present
-
-# Install packages
-- action: apt update_cache=yes
-- action: apt name=dpkg-sig
-- action: apt name=nginx
-- action: apt name=aptly
-
-# Create Repo Management User and set permissions
 - user: name=repoman
-- file: path={{ repoman_home }}/debs state=directory owner=repoman group=repoman mode=0775
+- action: apt update_cache=yes
+- action: apt name=nginx
 
 # Create Web Root
+
 - file: path={{ webroot }} state=directory owner=repoman group=repoman mode=0755
 
 # Copy and Import PGP Keys
+
 - copy: src=../bigsense.pub dest={{ repoman_home }} owner=root group=repoman mode=0650
 - copy: src=../bigsense.sec dest={{ repoman_home }} owner=root group=repoman mode=0650
 - template: src=bigsense.passphrase.j2 dest={{ pgp_passfile }} owner=repoman mode=0400
 - command: gpg --import {{ repoman_home }}/bigsense.sec creates={{ repoman_home }}/.gnupg/secring.gpg
   sudo_user: repoman
-
-# Create aptly repo db
-- template: src=aptly.conf.j2 dest={{ repoman_home }}/{{ item.version }}.aptly owner=root mode=0644
-  with_items: repos[0]
-- command: aptly repo create -comment="bigsense repository" -component={{ item[1] }} -config=/home/repoman/{{ item[0].version }}.aptly {{ item[0].version }}-{{ item[1] }} creates={{ repo_init }}
-  with_nested: repos
-  register: create_repo
-  sudo_user: repoman
-- file: path={{ repo_init }} state=touch
-  when: create_repo|success
-
-#publish repo
-- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -distribution={{ item.version }} -component={{repos[1]|join(',')}} -config={{ repoman_home }}/{{ item.version }}.aptly publish repo {% for i in repos[1] %}{{item.version}}-{{i}} {% endfor %}  creates={{ publish_init }}
-  with_items: repos[0]
-  register: publish_repo
-  sudo_user: repoman
-- file: path={{ publish_init }} state=touch
-- shell: gpg --export -a "BigSensePGPKey" > {{ webroot }}/bigsense.io.key
-  sudo_user: repoman
-- file: src={{ repoman_home }}/public path={{ webroot }}/debs state=link
-
-#add publishing script and copy ssh transfer keys
-- copy: src=publish dest={{ repoman_home }} owner=root group=repoman mode=0550
-- file: path={{ repoman_home }}/.ssh state=directory owner=repoman group=repoman mode=0700
-- copy: src=../jenkins.ssh.pub dest={{ repoman_home }}/.ssh/authorized_keys owner=repoman group=repoman mode=0600
-# Not sure why this doesn't work
-#- authorized_key: user=repoman key={{ lookup('file','/home/sumit/sensespace/vSense/virtual-env/build/jenkins.ssh.pub') }}
 
 # serve repo though nginx
 - template: src=nginx.j2 dest=/etc/nginx/sites-available/repo owner=root group=root mode=0644
@@ -58,3 +23,16 @@
 - file: path=/etc/nginx/sites-enabled/default state=absent
   notify: 'Reload Nginx'
 - service: name=nginx enabled=yes state=started
+
+#add publishing script and copy ssh transfer keys
+
+- copy: src=publish dest={{ repoman_home }} owner=root group=repoman mode=0550
+- file: path={{ repoman_home }}/.ssh state=directory owner=repoman group=repoman mode=0700
+- copy: src=../jenkins.ssh.pub dest={{ repoman_home }}/.ssh/authorized_keys owner=repoman group=repoman mode=0600
+# Not sure why this doesn't work
+#- authorized_key: user=repoman key={{ lookup('file','/home/sumit/sensespace/vSense/virtual-env/build/jenkins.ssh.pub') }}
+
+# apt (debian) and yum (centos/opensuse) repositories
+
+- include: apt.yml
+- include: yum.yml

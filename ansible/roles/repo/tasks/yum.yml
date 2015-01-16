@@ -1,0 +1,3 @@
+# Create RPM Dir
+- file: path={{ repoman_home }}/rpms state=directory owner=repoman group=repoman mode=0775
+- action: apt name=createrepo

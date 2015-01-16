@@ -19,22 +19,22 @@ def run_cmd(cmd):
         print(l.decode('utf-8'),end='')
     proc.communicate()
 
-for deb in glob( os.path.join(debs, '*.deb') ):
+
     for repo_config in glob( os.path.join(homedir, '*.aptly') ):
+        for deb in glob( os.path.join(debs, repo_name(repo_config), '*.deb') ):
+            version = deb.split('_')[1]
+            ends_with_number = re.search(r'\d+$', version)
 
-        version = deb.split('_')[1]
-        ends_with_number = re.search(r'\d+$', version)
+            if '-' in version:
+                component = 'nightly'
+            elif ends_with_number is None:
+                component = 'testing'
+            else:
+                component = 'stable'
 
-        if '-' in version:
-            component = 'nightly'
-        elif ends_with_number is None:
-            component = 'testing'
-        else:
-            component = 'stable'
+            run_cmd(('aptly','-config={}'.format(repo_config),'repo','add','{}-{}'.format(repo_name(repo_config),component),deb))
 
-        run_cmd(('aptly','-config={}'.format(repo_config),'repo','add','{}-{}'.format(repo_name(repo_config),component),deb))
-
-    os.unlink(deb)
+            os.unlink(deb)
 
 # Can't get -passphrase-file to work
 passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()

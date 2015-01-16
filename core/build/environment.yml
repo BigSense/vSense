@@ -21,3 +21,6 @@ pgp:
   comment: BigSensePGPKey
   expire: 0
   passphrase: changeme
+bigsense:
+  scm_polling: true
+  polling_interval: H/15 * * * *

@@ -24,16 +24,22 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  {% if bigsense.scm_polling == 'false' %}
   <triggers/>
+  {% endif %}
+  {% if bigsense.scm_polling == 'true' %}
+    <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>{{ bigsense.polling_interval }}</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+    </triggers>
+  {% endif %}
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <org.jvnet.hudson.plugins.SbtPluginBuilder plugin="sbt@1.4">
-      <name>sbt</name>
-      <jvmFlags></jvmFlags>
-      <sbtFlags>-Dsbt.log.noformat=true</sbtFlags>
-      <actions>debian:package-bin</actions>
-      <subdirPath></subdirPath>
-    </org.jvnet.hudson.plugins.SbtPluginBuilder>
+    <hudson.tasks.Shell>
+      <command>./packageAll</command>
+    </hudson.tasks.Shell>
   </builders>
   <publishers>
     <hudson.plugins.postbuildtask.PostbuildTask plugin="postbuild-task@1.8">
@@ -41,13 +47,15 @@
         <hudson.plugins.postbuildtask.TaskProperties>
           <logTexts>
             <hudson.plugins.postbuildtask.LogProperties>
-              <logText>Build step &apos;Build using sbt&apos; changed build result to SUCCESS</logText>
+              <logText>success</logText>
               <operator>AND</operator>
             </hudson.plugins.postbuildtask.LogProperties>
           </logTexts>
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
-          <script>scp -oStrictHostKeyChecking=no target/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs &#xd;
+          <script>scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-upstart/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/trusty&#xd;
+scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-systemv/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/wheezy&#xd;
+scp -oStrictHostKeyChecking=no $WORKSPACE/package/rpm-systemd/rpm/RPMS/noarch/*rpm repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/rpms&#xd;
 ssh -t -t -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish</script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>
