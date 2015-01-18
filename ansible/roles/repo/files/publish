@@ -19,6 +19,7 @@ def run_cmd(cmd):
         print(l.decode('utf-8'),end='')
     proc.communicate()
 
+if __name__ == '__main__':
 
     for repo_config in glob( os.path.join(homedir, '*.aptly') ):
         for deb in glob( os.path.join(debs, repo_name(repo_config), '*.deb') ):
@@ -36,8 +37,8 @@ def run_cmd(cmd):
 
             os.unlink(deb)
 
-# Can't get -passphrase-file to work
-passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
+    # Can't get -passphrase-file to work
+    passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
 
-for repo_config in glob( os.path.join(homedir, '*.aptly') ):
-    run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
+    for repo_config in glob( os.path.join(homedir, '*.aptly') ):
+        run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
