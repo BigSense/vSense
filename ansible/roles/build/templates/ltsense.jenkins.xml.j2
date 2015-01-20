@@ -24,7 +24,17 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  {% if scm.polling == 'false' %}
   <triggers/>
+  {% endif %}
+  {% if scm.polling == 'true' %}
+    <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>{{ scm.polling_interval }}</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+    </triggers>
+  {% endif %}
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
@@ -43,9 +53,10 @@
           </logTexts>
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
-          <script>scp -oStrictHostKeyChecking=no *deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs &#xd;
-ssh -t -t -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish&#xd;
-rm $WORKSPACE/*.deb</script>
+          <script>scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-upstart/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/trusty&#xd;
+scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-systemv/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/wheezy&#xd;
+scp -oStrictHostKeyChecking=no $WORKSPACE/package/rpm-systemd/rpm/RPMS/noarch/*rpm repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/rpms&#xd;
+ssh -t -t -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish</script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>
     </hudson.plugins.postbuildtask.PostbuildTask>

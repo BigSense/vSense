@@ -24,13 +24,13 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  {% if bigsense.scm_polling == 'false' %}
+  {% if scm.polling == 'false' %}
   <triggers/>
   {% endif %}
-  {% if bigsense.scm_polling == 'true' %}
+  {% if scm.polling == 'true' %}
     <triggers>
     <hudson.triggers.SCMTrigger>
-      <spec>{{ bigsense.polling_interval }}</spec>
+      <spec>{{ scm.polling_interval }}</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
     </triggers>
