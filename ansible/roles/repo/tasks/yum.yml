@@ -1,3 +1,8 @@
 # Create RPM Dir
 - file: path={{ repoman_home }}/rpms state=directory owner=repoman group=repoman mode=0775
+- file: path={{ repoman_home }}/yum/{{ item }} state=directory owner=repoman group=repoman mode=0775
+  with_items: repos[1]
 - action: apt name=createrepo
+- command: createrepo {{ repoman_home }}/yum/{{ item }} --deltas creates={{ repoman_home }}/yum/{{ item }}/repodata/repomd.xml
+  with_items: repos[1]
+
