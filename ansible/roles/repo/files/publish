@@ -4,10 +4,18 @@ from subprocess import Popen, PIPE
 import os
 import re
 from glob import glob
+import shutil
 
 homedir = os.path.expanduser('~')
-debs = os.path.join(homedir,'debs')
+debs = os.path.join(homedir, 'debs')
+rpms = os.path.join(homedir, 'rpms')
+yums = os.path.join(homedir, 'yum')
 components = ['nightly', 'testing', 'stable' ]
+packages = { 'rpm' :
+              { 'components_split' : '-', 'version_split' : '_' },
+             'deb' :
+              { 'components_split' : '_', 'version_split' : '-' }  
+           }
 
 def repo_name(config_file):
     return os.path.basename(config_file).split('.')[0]
@@ -19,22 +27,30 @@ def run_cmd(cmd):
         print(l.decode('utf-8'),end='')
     proc.communicate()
 
+def stage_from_version(file):
+    """
+    versions that contain a dash or underscore (e.g. -1-2afe32) are nightly
+    versions that do not end with a number (e.g alpha, beta) are testing
+    all other version (e.g. 0.2.5) are stable
+    """
+    package_type = 'rpm' if file.endswith('.rpm') else 'deb'
+    split_char = '-' if file.endswith('.rpm') else '_'
+    version = file.split(packages[package_type]['component_split'])[1]
+    ends_with_number = re.search(r'\d+$', version)
+   
+    if packages[package_type]['version_split'] in version:
+        component = 'nightly'
+    elif ends_with_number is None:
+        component = 'testing'
+    else:
+        component = 'stable'        
+
 if __name__ == '__main__':
 
     for repo_config in glob( os.path.join(homedir, '*.aptly') ):
         for deb in glob( os.path.join(debs, repo_name(repo_config), '*.deb') ):
-            version = deb.split('_')[1]
-            ends_with_number = re.search(r'\d+$', version)
-
-            if '-' in version:
-                component = 'nightly'
-            elif ends_with_number is None:
-                component = 'testing'
-            else:
-                component = 'stable'
-
+            component = stage_from_version(deb)
             run_cmd(('aptly','-config={}'.format(repo_config),'repo','add','{}-{}'.format(repo_name(repo_config),component),deb))
-
             os.unlink(deb)
 
     # Can't get -passphrase-file to work
@@ -42,3 +58,16 @@ if __name__ == '__main__':
 
     for repo_config in glob( os.path.join(homedir, '*.aptly') ):
         run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
+
+    # RPMs
+
+    for rpm in glob( os.path.join(rpms, '*.rpm')):
+        component = stage_from_version(rpm)
+        shutil.move(rpm, os.path.join(yums, component))
+
+    for stage in components:
+        run_cmd(('createrepo', '--update', os.path.join(yums, stage)))
+        run_cmd(('gpg', '--detach-sign', '--armor', '--passphrase', passphrase, os.path.join(yums, stage, 'repodata', 'repomd.xml'))) 
+
+
+ 
