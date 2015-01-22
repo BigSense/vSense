@@ -12,9 +12,9 @@ rpms = os.path.join(homedir, 'rpms')
 yums = os.path.join(homedir, 'yum')
 components = ['nightly', 'testing', 'stable' ]
 packages = { 'rpm' :
-              { 'components_split' : '-', 'version_split' : '_' },
+              { 'component_split' : '-', 'version_split' : '_' },
              'deb' :
-              { 'components_split' : '_', 'version_split' : '-' }  
+              { 'component_split' : '_', 'version_split' : '-' }
            }
 
 def repo_name(config_file):
@@ -37,13 +37,13 @@ def stage_from_version(file):
     split_char = '-' if file.endswith('.rpm') else '_'
     version = file.split(packages[package_type]['component_split'])[1]
     ends_with_number = re.search(r'\d+$', version)
-   
+
     if packages[package_type]['version_split'] in version:
-        component = 'nightly'
+        return 'nightly'
     elif ends_with_number is None:
-        component = 'testing'
+        return 'testing'
     else:
-        component = 'stable'        
+        return 'stable'
 
 if __name__ == '__main__':
 
@@ -67,7 +67,4 @@ if __name__ == '__main__':
 
     for stage in components:
         run_cmd(('createrepo', '--update', os.path.join(yums, stage)))
-        run_cmd(('gpg', '--detach-sign', '--armor', '--passphrase', passphrase, os.path.join(yums, stage, 'repodata', 'repomd.xml'))) 
-
-
- 
+        run_cmd(('gpg', '--batch', '--yes', '--detach-sign', '--armor', '--passphrase', passphrase, os.path.join(yums, stage, 'repodata', 'repomd.xml')))

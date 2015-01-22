@@ -52,7 +52,7 @@
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
           <script>scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-upstart/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/trusty&#xd;
 scp -oStrictHostKeyChecking=no $WORKSPACE/package/deb-systemv/*deb repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/debs/wheezy&#xd;
-scp -oStrictHostKeyChecking=no $WORKSPACE/package/rpm-systemd/rpm/RPMS/noarch/*rpm repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/rpms&#xd;
+scp -oStrictHostKeyChecking=no $WORKSPACE/package/rpm-systemd/*rpm repoman@{{ servers.repository.hostname }}.{{ domain }}:/home/repoman/rpms&#xd;
 ssh -t -t -oStrictHostKeyChecking=no {{ servers.repository.hostname }}.{{ domain }} -lrepoman /home/repoman/publish</script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>
