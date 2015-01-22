@@ -1,5 +1,5 @@
 ---
-job_dir : "/home/repoman/jobs"
+job_dir : "/opt/jenkins/job_imports"
 bigsense_job_xml : "{{job_dir}}/bigsense.jenkins.xml"
 bigsense_jenkins_xml: /var/lib/jenkins/jobs/BigSense/config.xml
 ltsense_job_xml : "{{job_dir}}/ltsense.jenkins.xml"

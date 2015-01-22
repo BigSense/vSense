@@ -24,10 +24,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  {% if scm.polling == 'false' %}
-  <triggers/>
-  {% endif %}
-  {% if scm.polling == 'true' %}
+  {% if scm.polling %}
     <triggers>
     <hudson.triggers.SCMTrigger>
       <spec>{{ scm.polling_interval }}</spec>
