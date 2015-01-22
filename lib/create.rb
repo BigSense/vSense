@@ -29,7 +29,7 @@ class CreateAction < Action
         @options[:fixtures] = f
       end
 
-      opts.on('-e','--env ENVIRONMENT',[:build,:run],'Environment type (build|run) [default: run]') do |e|
+      opts.on('-e','--env ENVIRONMENT',[:build,:run,:infrastructure],'Environment type (build|run|infrastructure) [default: run]') do |e|
         @options[:environment] = e
       end
 
@@ -61,12 +61,12 @@ class CreateAction < Action
       @options[:environment] = :run
     end
 
-    # flags not used on build environments
+    # flags not used on build or infrastructure environments
 
-    if @options[:environment] == :build
+    if @options[:environment] == :build or @options[:environment] == :infrastructure
       @options.each do |key,val|
         if not ([key[0]] & ['b','d','s','o']).empty?
-          STDERR.puts "Build environment do not take a --#{key} flag".red
+          STDERR.puts "Only run environment take a --#{key} flag".red
           exit 1
         end
       end
@@ -113,10 +113,10 @@ class CreateAction < Action
 
     ## Build Env
 
-    if @options[:environment] == :build
+    if @options[:environment] == :build or @options[:environment] == :infrastructure
 
-      puts ('Creating Build Environment: %s' % @args[0]).green
-      FileUtils.cp_r( File.join(BASE,'core/build/environment.yml'), @env_dir)
+      puts ("Creating #{@options[:environment]} environment: #{@args[0]}").green
+      FileUtils.cp_r( File.join(BASE,"core/#{@options[:environment]}/environment.yml"), @env_dir)
 
     else # default is :run
 
