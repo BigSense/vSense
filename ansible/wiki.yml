@@ -1,0 +1,8 @@
+---
+- name: BigSense Confluence Wiki
+  hosts: wiki
+  sudo: true
+  vars_files:
+    - ../environment.yml
+  roles:
+   - wiki

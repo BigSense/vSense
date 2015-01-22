@@ -12,6 +12,10 @@ class VagrantEnv
     @vars['servers'][server]['ip']
   end
 
+  def ip_ext(server)
+    @vars['servers'][server]['ip_ext']
+  end
+
   def hostname(server)
     @vars['servers'][server]['hostname']
   end

@@ -15,25 +15,28 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
-  config.vm.define "build" do |build|
-    build.vm.network :private_network, ip: vars.ip('build')
-    build.vm.hostname = vars.hostname('build')
-    build.hostmanager.aliases = vars.aliases('build')
-    build.vm.provider "virtualbox" do |vb|
+  #config.vm.define "haproxy" do |haproxy|
+  #  haproxy.vm.network :private_network, ip: vars.ip('haproxy')
+  #  haproxy.vm.network :public_network, ip: vars.ip_ext('haproxy')
+  #  haproxy.vm.hostname = vars.hostname('haproxy')
+  #  haproxy.hostmanager.aliases = vars.aliases('haproxy')
+  #  haproxy.vm.provision "ansible" do |ansible|
+  #    ansible.playbook = "ansible/haproxy.yml"
+  #  end
+  #end
+
+  config.vm.define "wiki" do |wiki|
+    wiki.vm.network :private_network, ip: vars.ip('wiki')
+    wiki.vm.hostname = vars.hostname('wiki')
+    wiki.hostmanager.aliases = vars.aliases('wiki')
+    wiki.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
     end
-    build.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/build.yml"
+    wiki.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/wiki.yml"
     end
   end
 
-  config.vm.define "repo" do |repo|
-    repo.vm.network :private_network, ip: vars.ip('repository')
-    repo.vm.hostname = vars.hostname('repository')
-    repo.hostmanager.aliases = vars.aliases('repository')
-    repo.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/repo.yml"
-    end
-  end
+
 
 end

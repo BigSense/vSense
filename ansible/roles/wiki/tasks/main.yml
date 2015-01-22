@@ -1,0 +1,40 @@
+---
+
+# Install Java
+
+- apt: update_cache=yes
+- apt: name=openjdk-7-jre
+
+# Setup Database
+
+- apt: name=postgresql
+- apt: name=python-psycopg2
+- service: name=postgresql enabled=yes state=started
+- postgresql_user: name={{ confluence.db_user }} password={{ confluence.db_pass }}
+  sudo_user: postgres
+- postgresql_db: name={{ confluence.db_name }} owner={{ confluence.db_user }}
+  sudo_user: postgres
+
+# Get and extract confluence
+
+- get_url: url={{ package_url }} dest=/opt/{{ package }}
+- unarchive: copy=no src=/opt/{{ package }} dest=/opt
+- file: src=/opt/{{ package | regex_replace('/(.*)\.[^.]+$/') }} path={{ confluence_base }} state=link
+
+# Configure confluence
+
+- user: name=confluence
+- file: path={{ confluence_data }} owner=confluence mode=0700 state=directory
+- template: src=confluence-init.properties.j2 dest={{ confluence_base }}/confluence/WEB-INF/classes/confluence-init.properties
+#- template: src=confluence.cfg.xml.j2 dest={{ confluence_data }}/confluence.cfg.xml
+
+# BigSense favicon
+
+- copy: src=favicon.ico dest={{ confluence_base }}/confluence/favicon.ico
+- copy: src=favicon.ico dest={{ confluence_base }}/confluence/images/icons/favicon.ico
+- copy: src=favicon.png dest={{ confluence_base }}/confluence/images/icons/favicon.png
+
+# Upstart
+
+- copy: src=confluence.conf dest=/etc/init/confluence.conf
+- service: name=confluence enabled=yes state=started
