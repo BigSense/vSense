@@ -15,6 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
+
   #config.vm.define "haproxy" do |haproxy|
   #  haproxy.vm.network :private_network, ip: vars.ip('haproxy')
   #  haproxy.vm.network :public_network, ip: vars.ip_ext('haproxy')
@@ -36,7 +37,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook = "ansible/wiki.yml"
     end
   end
-
-
 
 end
