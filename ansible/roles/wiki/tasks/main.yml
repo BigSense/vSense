@@ -18,13 +18,15 @@
 # Get and extract confluence
 
 - get_url: url={{ package_url }} dest=/opt/{{ package }}
-- unarchive: copy=no src=/opt/{{ package }} dest=/opt
-- file: src=/opt/{{ package | regex_replace('/(.*)\.[^.]+$/') }} path={{ confluence_base }} state=link
+- unarchive: copy=no src=/opt/{{ package }} dest=/opt creates={{ package_base }}
+- file: path=/opt/{{ package_base }} owner=root group=root recurse=yes state=directory
+- file: src=/opt/{{ package_base }} path={{ confluence_base }} state=link
+- file: path={{ confluence_base }}/temp mode=0750 owner=confluence group=confluence
 
 # Configure confluence
 
 - user: name=confluence
-- file: path={{ confluence_data }} owner=confluence mode=0700 state=directory
+- file: path={{ confluence_data }} owner=confluence group=confluence mode=0750 state=directory
 - template: src=confluence-init.properties.j2 dest={{ confluence_base }}/confluence/WEB-INF/classes/confluence-init.properties
 #- template: src=confluence.cfg.xml.j2 dest={{ confluence_data }}/confluence.cfg.xml
 

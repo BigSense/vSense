@@ -1,5 +1,6 @@
 ---
-package: atlassian-confluence-5.6.6.tar.gz
+package: "atlassian-confluence-{{ confluence.version }}.tar.gz"
+package_base: "{{ package | regex_replace('.tar.gz','') }}"
 package_url: "http://www.atlassian.com/software/confluence/downloads/binary/{{ package }}"
 confluence_data: /opt/confluence-data
 confluence_base: /opt/confluence

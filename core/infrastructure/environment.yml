@@ -11,6 +11,7 @@ servers:
     hostname: wiki
     ip: 10.22.2.12
 confluence:
+  version: 5.6.6
   db_name: confluence
   db_user: confluence
   db_pass: wikipass
