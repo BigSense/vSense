@@ -3,11 +3,13 @@ require_relative "action"
 
 class Environment
 
-  ENV_FILE = File.join(Action::ENVS,'list.yml')
-  @@env_settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : []
+  ENV_FILE = File.join(Action::ENVS,'vsense.yml')
+  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : { 'environments' => {}, 'security' => {} }
+  @@env_settings = @@settings['environments']
+  @@sec_settings = @@settings['security']
 
   def self.add(name,env_type)
-    @@env_settings << { 'name' => name , 'type' => env_type } 
+    @@env_settings << { 'name' => name , 'type' => env_type }
     save_env_list
   end
 
@@ -23,6 +25,28 @@ class Environment
   def self.info(name)
     @@env_settings.reject { |h| h['name'] != name }
   end
+
+  # security settings
+
+  def self.pgp_id()
+    @@sec_settings['pgp_id']
+  end
+
+  def self.pgp_id=(value)
+    @@sec_settings['pgp_id'] = value
+    save_env_list
+  end
+
+  def self.ssh_key_file()
+    @@sec_settings['ssh_key_file']
+  end
+
+  def self.ssh_key_file=(value)
+    @@sec_settings['ssh_key_file'] = value
+    save_env_list
+  end
+
+  # end security
 
   def self.list()
 
@@ -59,7 +83,7 @@ class Environment
 
     def self.save_env_list()
       File.open(ENV_FILE, 'w') do |file|
-        file.write(@@env_settings.to_yaml)
+        file.write(@@settings.to_yaml)
       end
     end
 

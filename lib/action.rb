@@ -33,7 +33,7 @@ class Action
       exit 4
     end
     begin @opts.parse! @args
-    rescue *[OptionParser::InvalidOption,OptionParser::InvalidArgument] => e
+    rescue *[OptionParser::InvalidOption,OptionParser::InvalidArgument,OptionParser::MissingArgument] => e
       STDERR.puts e
       STDERR.puts @opts
       exit 1
@@ -41,8 +41,8 @@ class Action
   end
 
   def validate()
-    #Every action requires an environment name to act on
-    # if this changes, we can add an option boolean parameter
+    #Most actions requires an environment name to act on
+    # if not, don't call super
     if @args.length == 0
       STDERR.puts @opts
       exit 1
