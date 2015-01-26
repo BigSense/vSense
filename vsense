@@ -6,9 +6,10 @@ require_relative 'lib/destroy'
 require_relative 'lib/vagrant'
 require_relative 'lib/env'
 require_relative 'lib/genkey'
+require_relative  'lib/secure'
 
 usage = <<-USAGE
-Usage: vsense [ create | list | genkeys | destroy | start | stop | status ]
+Usage: vsense [ create | list | genkeys | destroy | start | stop | status | secure ]
 
 \t create  - creates a new environment
 \t list    - list of all environments
@@ -17,6 +18,7 @@ Usage: vsense [ create | list | genkeys | destroy | start | stop | status ]
 \t start   - start an environment
 \t stop    - stop an environment
 \t status  - display the status of an environment
+\t secure  - configures production level security for all environments
 
 add -h or --help for additional argumnets for each command
 USAGE
@@ -41,6 +43,8 @@ case ARGV[0]
   	action = DestroyAction.new(ARGV)
   when 'start', 'stop', 'status'
     action = Vagrant.new(ARGV)
+  when 'secure'
+    action = SecureAction.new(ARGV)
 end
 
 action.run

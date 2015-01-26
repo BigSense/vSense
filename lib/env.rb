@@ -4,7 +4,8 @@ require_relative "action"
 class Environment
 
   ENV_FILE = File.join(Action::ENVS,'list.yml')
-  @@env_settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : []
+  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : []
+  @@env_settings = @@settings['environments']
 
   def self.add(name,env_type)
     @@env_settings << { 'name' => name , 'type' => env_type } 
@@ -14,6 +15,10 @@ class Environment
   def self.del(name)
     @@env_settings = @@env_settings.reject { |h| h['name'] == name }
     save_env_list
+  end
+
+  def self.add_security(setting,value)
+    @@settings['security'][setting] = value
   end
 
   def self.build_envs()
@@ -59,7 +64,7 @@ class Environment
 
     def self.save_env_list()
       File.open(ENV_FILE, 'w') do |file|
-        file.write(@@env_settings.to_yaml)
+        file.write(@@settings.to_yaml)
       end
     end
 
