@@ -18,6 +18,10 @@ class Environment
     save_env_list
   end
 
+  def self.add_security(setting,value)
+    @@settings['security'][setting] = value
+  end
+
   def self.build_envs()
     @@env_settings.reject { |e| e['type'] != 'build' }.collect { |l| l['name'] }
   end
