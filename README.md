@@ -88,8 +88,42 @@ Keep in mind that Jenkins builds packages and publishes them to the appropiate r
 If the runtime environment is configured for a branch that doesn't have any packages published yet, it will fail to provision.
 
 
-Creating a Cross-Matrix Environment
-===================================
+Infrastructure (advanced)
+=========================
+
+The Infrastructure environemnt is a special case for building an haproxy and wiki. It's used for the internal systems that hose http://bigsense.io. You probably don't need to build this unless you plan on hosting an entire BigSense organization of your own, or need your various environments accessable from the outside world.
+
+TODO: expand documentation
+
+
+Security
+========
+
+By default, vagrant VMs are insecure. Their vagrant/root passwords are set to vagrant and they use a common, non-passphrase protected SSH key. The secure action can ensure vsense will automatically generate passwords, store those passwords in ~/.password-store and encrypt them with a pgp key (so they can be retrieved using the `pass` command).
+
+*Note* that this will only protect new VMs or VMs that are re-provisioned via Ansible.
+
+The secure action requires the following dependencies:
+
+* pwgen
+* whois (for mkpasswd)
+* pass (option)
+
+To automatically generate passwords and encrypt them, you must specify a PGP key ID that exists in your keystore.
+
+`
+./vsense secure -p 6D0D93B1
+`
+
+To use a custom SSH key for the vagrant user:
+
+`
+./vsense secure -s [path to ssh key]
+`
+
+
+Creating a Cross-Matrix Environment (advanced)
+==============================================
 
 vSense comes with fixtures designed for intergration tests. The most common of these tests would be to build environments for each supported database and ensure they all return the same results.
 
