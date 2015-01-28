@@ -1,4 +1,6 @@
 ---
 - include_vars: ../../vsense.yml
-- include: enable-security.yml
-  when: security is defined
+- include: enable-ssh.yml
+  when: security.ssh_key_file is defined
+- include: enable-password.yml
+  when: security.pgp_id is defined

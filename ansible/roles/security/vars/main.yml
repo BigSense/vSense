@@ -1,0 +1,3 @@
+---
+pgp_password_path: "{{ lookup('env','HOME') }}/.password-store/vsense/{{ name }}"
+pgp_password_file: "{{ pgp_password_path }}/{{ inventory_hostname }}.gpg"
