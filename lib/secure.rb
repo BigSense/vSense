@@ -21,7 +21,7 @@ class SecureAction < Action
         @options[:pgp_id] = id
       end
 
-      opts.on('-f', '--force', 'Overwrite existing PGP ID in #{GPG_ID_FILE}') do |f|
+      opts.on('-f', '--force', "Overwrite existing PGP ID in #{GPG_ID_FILE}") do |f|
         @options[:force_pgp] = f
       end
 
