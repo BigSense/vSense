@@ -4,9 +4,22 @@ require 'yaml'
 
 class VagrantEnv
 
-  def initialize(yml_file)
-    @vars = YAML.load_file(yml_file)
+  def initialize(global_yml, local_yml)
+    @vars = YAML.load_file(local_yml)
+    @vsense = YAML.load_file(global_yml)
   end
+
+  # security
+
+  def ssh_security_enabled?()
+    not @vsense['security']['ssh_key_file'].nil?
+  end
+
+  def ssh_identity_key_file()
+    @vsense['security']['ssh_key_file']
+  end
+
+  # end security
 
   def ip(server)
     @vars['servers'][server]['ip']

@@ -77,9 +77,16 @@ class SecureAction < Action
 
     end
 
-    if @options[:ssh_key_file] and not File.exists?(@options[:ssh_key_file])
+    if @options[:ssh_key_file]
+      if not File.exists?(@options[:ssh_key_file])
        STDERR.puts "Could not find SSH key file #{@options[:ssh_key_file]}".red
        exit 1
+      end
+      public_key = "#{@options[:ssh_key_file].pub}"
+      if not File.exists?(public_key)
+       STDERR.puts "Could not find matching SSH public key #{public_key}".red
+       exit 1
+      end
     end
 
   end
