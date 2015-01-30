@@ -5,5 +5,5 @@
   vars_files:
     - ../environment.yml
   roles:
-   - { role: security }
+   - security
    - database

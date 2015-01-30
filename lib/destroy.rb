@@ -44,6 +44,10 @@ class DestroyAction < Action
     Vagrant.run_cmd(@env_dir, 'destroy -f')
     FileUtils.rm_rf(@env_dir)
     Environment::del(@args[0])
+    password_store = File.join(ENV['HOME'], '.password-store', 'vsense', @args[0])
+    if File.exists?(password_store)
+      FileUtils.rm_rf(password_store)
+    end
 
   end
 

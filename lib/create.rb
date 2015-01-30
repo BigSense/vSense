@@ -110,21 +110,21 @@ class CreateAction < Action
     end
 
     FileUtils.mkdir_p @env_dir
+    env_config = YAML.load_file(File.join(BASE,"core/#{@options[:environment]}/environment.yml"))
+    env_config['name'] = @args[0]
 
     ## Build Env
 
     if @options[:environment] == :build or @options[:environment] == :infrastructure
 
       puts ("Creating #{@options[:environment]} environment: #{@args[0]}").green
-      FileUtils.cp_r( File.join(BASE,"core/#{@options[:environment]}/environment.yml"), @env_dir)
+
 
     else # default is :run
 
       puts ('Creating Runtime Environment: %s' % @args[0]).green
 
       # configuration
-
-      env_config = YAML.load_file(File.join(BASE,'core/run/environment.yml'))
 
       for i in env_config['servers'].keys
         env_config['servers'][i]['hostname'].sub!('%env%',@args[0])
@@ -146,15 +146,13 @@ class CreateAction < Action
       env_config['servers']['ltsense']['os'] = @options[:os].to_s
       env_config['repository']['stage'] = @options[:stage].to_s
 
-      # files
-
-      File.open(File.join(@env_dir,'environment.yml'), 'w') do |file|
-        file.write(env_config.to_yaml)
-      end
-
     end
 
     #shared
+
+    File.open(File.join(@env_dir,'environment.yml'), 'w') do |file|
+      file.write(env_config.to_yaml)
+    end
 
     env_str = @options[:environment].to_s
     File.symlink(File.join(BASE,"core/#{env_str}/Vagrantfile"),File.join(@env_dir,'Vagrantfile'))

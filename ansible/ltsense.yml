@@ -5,6 +5,6 @@
   vars_files:
     - ../environment.yml
   roles:
-   - { role: security }
+   - security
    - { role: build-host, when: repository.custom == true }
    - ltsense

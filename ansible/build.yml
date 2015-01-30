@@ -5,7 +5,7 @@
   vars_files:
     - ../environment.yml
   roles:
-   - { role: security }
+   - security
    - ansible-jenkins
    - build
   vars:
