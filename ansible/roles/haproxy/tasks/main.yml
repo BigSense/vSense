@@ -1,0 +1,11 @@
+---
+
+# Install 1.5 Haproxy package
+
+- apt_repository: repo='ppa:vbernat/haproxy-1.5'
+- action: apt update_cache=yes
+- action: apt name=haproxy
+
+# Configuration
+
+- template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg owner=root group=root mode=0644

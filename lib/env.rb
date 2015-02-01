@@ -4,7 +4,7 @@ require_relative "action"
 class Environment
 
   ENV_FILE = File.join(Action::ENVS,'vsense.yml')
-  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : { 'environments' => {}, 'security' => {} }
+  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : { 'environments' => [], 'security' => {} }
   @@env_settings = @@settings['environments']
   @@sec_settings = @@settings['security']
 
@@ -14,7 +14,7 @@ class Environment
   end
 
   def self.del(name)
-    @@env_settings = @@env_settings.reject { |h| h['name'] == name }
+    @@settings['environments'] = @@env_settings.reject { |h| h['name'] == name }
     save_env_list
   end
 
