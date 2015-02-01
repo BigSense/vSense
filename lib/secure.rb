@@ -108,7 +108,7 @@ class SecureAction < Action
 
     puts "Note: Security only takes place during provisioning. Existing environments remain unchanged".cyan
     puts "      It is recommended you run ssh-agent and gpg-agent.".cyan
-    puts "      Passwords are stored in #{GPG_ID_FILE} (see http://www.passwordstore.org/⟩".cyan
+    puts "      Passwords are stored in #{GPG_ID_FILE} (see http://www.passwordstore.org/)".cyan
 
   end
 
