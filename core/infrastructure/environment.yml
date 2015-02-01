@@ -15,3 +15,6 @@ confluence:
   db_name: confluence
   db_user: confluence
   db_pass: wikipass
+haproxy:
+  vhosts:
+    {  }

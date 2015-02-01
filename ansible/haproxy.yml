@@ -1,0 +1,9 @@
+---
+- name: BigSense Load Balancer
+  hosts: haproxy
+  sudo: true
+  vars_files:
+    - ../environment.yml
+  roles:
+   - security
+   - haproxy
