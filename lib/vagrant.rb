@@ -34,6 +34,12 @@ class Vagrant < Action
         exit 1
       end
     end
+    if @command == 'start' and settings()['type'] == 'infrastructure'
+      if !File.exists?(File.join(@env_dir,'bigsense-ssl.key')) or !File.exists?(File.join(@env_dir,'bigsense-ssl.pem'))
+        STDERR.puts "SSL Keys are missing. You must run ./vsense genkeys #{@args[0]}".red
+        exit 1
+      end
+    end
   end
 
   def run()
