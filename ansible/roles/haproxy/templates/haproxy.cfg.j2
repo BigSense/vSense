@@ -5,13 +5,11 @@ global
         user haproxy
         group haproxy
         daemon
-<<<<<<< HEAD
         stats socket /run/haproxy/admin.sock mode 660 level admin
         stats timeout 30s
         ssl-default-bind-ciphers kEECDH+aRSA+AES:kRSA+AES:+AES256:RC4-SHA:!kEDH:!LOW:!EXP:!MD5:!aNULL:!eNULL
         ssl-default-bind-options no-sslv3
-=======
->>>>>>> f4395bd19d356591c398e5fe27bafcd5fe2f8b11
+
 
 defaults
         log     global
