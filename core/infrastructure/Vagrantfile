@@ -8,7 +8,7 @@ vars = VagrantEnv.new
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = vbox_image('ubuntu')
 
   if vars.ssh_security_enabled?
     #TODO: have security role update environemnt.yml and check that instead

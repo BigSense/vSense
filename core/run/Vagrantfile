@@ -8,7 +8,7 @@ vars = VagrantEnv.new
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = vbox_image('ubuntu')
 
   if vars.ssh_security_enabled?
     #TODO: have security role update environemnt.yml and check that instead
@@ -31,7 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "bigsense" do |bigsense|
 
-    bigsense.vm.box = vars.vbox_image('bigsense')
+    bigsense.vm.box = vars.vbox_for_server('bigsense')
     bigsense.vm.network :private_network, ip: vars.ip('bigsense')
     bigsense.vm.hostname = vars.hostname('bigsense')
     bigsense.hostmanager.aliases = vars.aliases('bigsense')
@@ -45,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "ltsense" do |ltsense|
-    ltsense.vm.box = vars.vbox_image('ltsense')
+    ltsense.vm.box = vars.vbox_for_server('ltsense')
     ltsense.vm.network :private_network, ip: vars.ip('ltsense')
     ltsense.vm.hostname = vars.hostname('ltsense')
     ltsense.hostmanager.aliases = vars.aliases('ltsense')

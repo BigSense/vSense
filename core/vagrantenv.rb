@@ -37,8 +37,12 @@ class VagrantEnv
     ['%s.%s' %[@vars['servers'][server]['hostname'],@vars['domain']]]
   end
 
-  def vbox_image(server)
-    return @vsense['boxes'][@vars['servers'][server]['os']]
+  def vbox_for_server(server)
+    return vbox_image @vars['servers'][server]['os']
+  end
+
+  def vbox_image(os)
+    return @vsense['boxes'][os]
   end
 
 end
