@@ -4,7 +4,7 @@ require 'yaml'
 
 class VagrantEnv
 
-  def initialize(global_yml, local_yml)
+  def initialize(global_yml='../vsense.yml', local_yml='environment.yml')
     @vars = YAML.load_file(local_yml)
     @vsense = YAML.load_file(global_yml)
   end
@@ -38,16 +38,7 @@ class VagrantEnv
   end
 
   def vbox_image(server)
-    case @vars['servers'][server]['os']
-      when 'ubuntu'
-        return 'ubuntu/trusty64'
-      when 'debian'
-        return 'zauberpony/wheezy'
-      when 'centos'
-        return 'hansode/centos-7.0.1406-x86_64'
-      when 'opensuse'
-        return 'alchemy/opensuse-13.2-64'
-    end
+    return @vsense['boxes'][@vars['servers'][server]['os']]
   end
 
 end

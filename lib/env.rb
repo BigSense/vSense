@@ -3,8 +3,15 @@ require_relative "action"
 
 class Environment
 
+  DEFAULT_VIRTUALBOX_IMGS = { 
+    'ubuntu' => 'ubuntu/trusty64',
+    'debian' => 'zauberpony/wheezy',
+    'centos' =>  'hansode/centos-7.0.1406-x86_64',
+    'opensuse' => 'alchemy/opensuse-13.2-64' 
+  }
+
   ENV_FILE = File.join(Action::ENVS,'vsense.yml')
-  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : { 'environments' => [], 'security' => {} }
+  @@settings = File.exists?(ENV_FILE) ? YAML.load_file(ENV_FILE) : { 'environments' => [], 'security' => {}, 'boxes' => DEFAULT_VIRTUALBOX_IMGS }
   @@env_settings = @@settings['environments']
   @@sec_settings = @@settings['security']
 
@@ -86,6 +93,9 @@ class Environment
   private
 
     def self.save_env_list()
+      if not File.exists?(Action::ENVS)
+        FileUtils.mkdir_p Action::ENVS
+      end
       File.open(ENV_FILE, 'w') do |file|
         file.write(@@settings.to_yaml)
       end

@@ -4,7 +4,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 require './vagrantenv'
-vars = VagrantEnv.new('../vsense.yml', 'environment.yml')
+vars = VagrantEnv.new
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
