@@ -6,6 +6,17 @@
 - action: apt update_cache=yes
 - action: apt name=haproxy
 
+# SSL Keys
+
+- copy: src=../bigsense-ssl.key dest={{ ssl_private }} owner=root group=root mode=0600
+- copy: src=../bigsense-ssl.crt dest={{ ssl_private }} owner=root group=root mode=0600
+- assemble: src={{ ssl_private }} regexp=bigsense-ssl.(key|crt) dest={{ bigsense_pem }} owner=root group=root mode=0600
+
 # Configuration
 
 - template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg owner=root group=root mode=0644
+  notify: 'Reload HAProxy'
+
+# Start
+
+- service: name=haproxy enabled=yes state=started

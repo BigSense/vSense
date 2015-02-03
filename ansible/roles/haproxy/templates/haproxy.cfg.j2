@@ -16,9 +16,9 @@ defaults
         mode    http
         option  httplog
         option  dontlognull
-        contimeout 5000
-        clitimeout 50000
-        srvtimeout 50000
+        timeout connect 5000
+        timeout client 50000
+        timeout server 50000
         errorfile 400 /etc/haproxy/errors/400.http
         errorfile 403 /etc/haproxy/errors/403.http
         errorfile 408 /etc/haproxy/errors/408.http
@@ -31,23 +31,29 @@ defaults
         # Add x-forwarded-for header.
         option forwardfor
         option http-server-close
-        http-request set-header X-Forwarded-Port %[dst_port]
-        http-request add-header X-Forwarded-Proto https if { ssl_fc }
 
 frontend public
   bind :80
+  http-request set-header X-Forwarded-Port %[dst_port]
+  http-request add-header X-Forwarded-Proto https if { ssl_fc }
   redirect scheme https if !{ ssl_fc }
-  # bind :443 ssl crt cert.pem ca-file bundle.crt
-  # Example without CA certification bunch
-  bind :443 ssl crt snakeoil.pem
+  bind :443 ssl crt {{ bigsense_pem }}
 
   # SNI based vhosts
 
   {% for s in haproxy['vhosts'] %}
+  {% if s['subdomain'] is defined %}
   use_backend {{ s['subdomain'] }} if { hdr(host) -i {{ s['subdomain'] }}.{{ domain }} }
+  {% endif %}
   {% endfor %}
+  default_backend main
 
 {% for s in haproxy['vhosts'] %}
+{% if s['subdomain'] is defined %}
 backend {{ s['subdomain'] }}
-  server {{ s['subdomain'] }} {{ s['ip'] }} check
+  server {{ s['subdomain'] }} {{ s['ip'] }}:{{ s['port'] }} check
+{% else %}
+backend main
+  server main {{ s['ip'] }}:{{ s['port'] }} check
+{% endif %}
 {% endfor %}

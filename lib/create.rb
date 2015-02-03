@@ -171,7 +171,7 @@ class CreateAction < Action
     if @options[:environment] == :infrastructure
       puts ("#{step+=1}) Run the following to generate self-signed SSL keys:").cyan
       puts ("\t./vsense genkeys %s" %[@args[0]]).cyan
-      puts ("\t(alternatively, export your SSL keys to #{@env_dir}/bigsense-ssl.key and bigsnese-ssl.pem").cyan
+      puts ("\t(alternatively, export your SSL keys to #{@env_dir}/bigsense-ssl.key and bigsnese-ssl.crt").cyan
     end
     puts ('%d) Run ./vsense start %s' %[step+=1,@args[0]]).cyan
 

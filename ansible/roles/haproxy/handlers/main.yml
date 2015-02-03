@@ -1,0 +1,4 @@
+# Safe-restart Jenkins
+- name: Reload HAProxy
+  sudo: yes
+  service: name=haproxy enabled=yes state=reloaded

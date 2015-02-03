@@ -37,7 +37,7 @@ class GenKeyAction < Action
     @sec_file = File.join(@env_dir,'bigsense.sec')
 
     @key_file = File.join(@env_dir,'bigsense-ssl.key')
-    @pem_file = File.join(@env_dir,'bigsense-ssl.pem')
+    @pem_file = File.join(@env_dir,'bigsense-ssl.crt')
 
     env = Environment.info(@args[0])
     if !env[0]

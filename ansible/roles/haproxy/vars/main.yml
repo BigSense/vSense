@@ -1,0 +1,3 @@
+---
+ssl_private: /etc/ssl/private/
+bigsense_pem: "{{ssl_private}}/bigsense-ssl.pem"
