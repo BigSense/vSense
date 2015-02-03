@@ -13,6 +13,25 @@ git clone https://github.com/sumdog/vSense
 vagrant plugin install vagrant-hostmanager
 `
 
+Dependencies
+============
+
+Ubuntu 14.04 LTS doesn't have current versions of most of the dependencies we need.
+
+`
+# Install Vagrant 1.7
+
+wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
+sudo dpkg -i vagrant_1.7.2_x86_64.deb
+
+# Install Ansible
+
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+`
+
 Creating a Runtime Environment
 ==============================
 
