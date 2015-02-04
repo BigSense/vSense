@@ -17,5 +17,5 @@ confluence:
   db_pass: wikipass
 haproxy:
   vhosts:
-    { subdomain: repo , ip: 10.11.1.10 , port: 80 }
-    { ip: 10.22.2.12 , port: 8090 }
+    - { subdomain: repo , ip: 10.11.1.10 , port: 80 }
+    - { ip: 10.22.2.12 , port: 8090 }
