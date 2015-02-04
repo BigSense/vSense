@@ -23,7 +23,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.network :private_network, ip: vars.ip('haproxy')
-    haproxy.vm.network :public_network, ip: vars.ip_ext('haproxy')
+    haproxy.vm.provider "virtualbox" do |vb, vb_override|
+      vb_override.vm.network :public_network, ip: vars.ext_ip('haproxy')
+    end
+    haproxy.vm.provider "libvirt" do |virt, virt_override|
+      virt_override.vm.network :public_network, :dev => vars.ext_iface('haproxy'), :mode=>'bridge', :ip => vars.ext_ip('haproxy')
+    end
     haproxy.vm.hostname = vars.hostname('haproxy')
     haproxy.hostmanager.aliases = vars.aliases('haproxy')
     haproxy.vm.provision "ansible" do |ansible|

@@ -6,6 +6,7 @@ servers:
   haproxy:
     hostname: haproxy
     ip: 10.11.2.10
+    ext_iface: eth1
     ext_ip: 10.22.2.10
   wiki:
     hostname: wiki
