@@ -4,3 +4,8 @@
   when: security.ssh_key_file is defined
 - include: enable-password.yml
   when: security.pgp_id is defined
+
+
+# Some boxes have incorrect sudoers files for allowing sudo as another user
+
+- lineinfile: dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo   ALL=(ALL:ALL) ALL'
