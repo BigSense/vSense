@@ -30,6 +30,10 @@ sudo apt-get install software-properties-common
 sudo apt-add-repository ppa:ansible/ansible
 sudo apt-get update
 sudo apt-get install ansible
+
+# Install packages needed for security (options)
+
+sudo apt-get install whois pwgen
 `
 
 Creating a Runtime Environment
