@@ -38,6 +38,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     wiki.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
     end
+    wiki.vm.provider "libvirt" do |virt|
+      virt.memory = 4096
+      virt.cpus = 2
+    end
     wiki.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/wiki.yml"
     end
