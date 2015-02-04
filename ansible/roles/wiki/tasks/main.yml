@@ -1,5 +1,7 @@
 ---
 
+- user: name=confluence
+
 # Install Java
 
 - apt: update_cache=yes
@@ -25,10 +27,8 @@
 
 # Configure confluence
 
-- user: name=confluence
 - file: path={{ confluence_data }} owner=confluence group=confluence mode=0750 state=directory
 - template: src=confluence-init.properties.j2 dest={{ confluence_base }}/confluence/WEB-INF/classes/confluence-init.properties
-#- template: src=confluence.cfg.xml.j2 dest={{ confluence_data }}/confluence.cfg.xml
 
 # BigSense favicon
 
