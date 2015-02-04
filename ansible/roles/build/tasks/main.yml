@@ -7,6 +7,7 @@
 - action: apt name=rpm
 - action: apt name=python-setuptools
 - action: apt name=gcc
+- action: apt name=fakeroot
 - gem: name=fpm state=present user_install=no
 - gem: name=git state=present user_install=no
 
