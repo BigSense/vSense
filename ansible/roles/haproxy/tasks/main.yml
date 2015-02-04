@@ -10,7 +10,7 @@
 
 - copy: src=../bigsense-ssl.key dest={{ ssl_private }} owner=root group=root mode=0600
 - copy: src=../bigsense-ssl.crt dest={{ ssl_private }} owner=root group=root mode=0600
-- shell: cat {{ ssl_private }}/bigsense-ssl.crt {{ ssl_private }}/bigsense-ssl.key >> {{ bigsense_pem }}
+- shell: cat {{ ssl_private }}/bigsense-ssl.crt {{ ssl_private }}/bigsense-ssl.key > {{ bigsense_pem }}
 - file: path={{ bigsense_pem }} owner=root group=root mode=0600
 
 # Configuration
