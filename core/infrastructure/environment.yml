@@ -2,6 +2,7 @@
 name: core
 type: infrastructure
 domain: internal
+ext_gq: 10.42.7.1
 servers:
   haproxy:
     hostname: haproxy

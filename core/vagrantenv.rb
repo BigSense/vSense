@@ -33,6 +33,10 @@ class VagrantEnv
     @vars['servers'][server]['ext_iface']
   end
 
+  def ext_gw()
+    @vars['ext_gw']
+  end
+
   def hostname(server)
     @vars['servers'][server]['hostname']
   end
