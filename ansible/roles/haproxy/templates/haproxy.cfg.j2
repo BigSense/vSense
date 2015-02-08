@@ -37,6 +37,7 @@ frontend public
   http-request set-header X-Forwarded-Port %[dst_port]
   http-request add-header X-Forwarded-Proto https if { ssl_fc }
   redirect scheme https if !{ ssl_fc }
+  redirect prefix https://{{ domain }} code 301 if { hdr(host) -i www.{{ domain }} }
   bind :443 ssl crt {{ bigsense_pem }}
 
   # SNI based vhosts
