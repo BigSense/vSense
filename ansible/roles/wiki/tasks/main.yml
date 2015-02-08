@@ -4,8 +4,11 @@
 
 # Install Java
 
+- apt_repository: repo='ppa:webupd8team/java'
 - apt: update_cache=yes
-- apt: name=openjdk-7-jre
+- shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+- apt: name=oracle-java8-installer
+- apt: name=oracle-java8-set-default
 
 # Setup Database
 
