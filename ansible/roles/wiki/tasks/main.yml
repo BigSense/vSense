@@ -25,6 +25,7 @@
 - file: src=/opt/{{ package_base }} path={{ confluence_base }} state=link
 - file: path={{ confluence_base }}/temp mode=0750 owner=confluence group=confluence
 - file: path={{ confluence_base }}/logs mode=0750 owner=confluence group=confluence
+- file: path={{ confluence_base }}/work mode=0750 owner=confluence group=confluence
 
 # Configure confluence
 
