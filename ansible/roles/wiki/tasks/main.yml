@@ -35,6 +35,9 @@
 - file: path={{ confluence_data }} owner=confluence group=confluence mode=0750 state=directory
 - template: src=confluence-init.properties.j2 dest={{ confluence_base }}/confluence/WEB-INF/classes/confluence-init.properties
 
+# Java 8 log format change
+- lineinfile: dest={{ confluence_base }}/bin/setenv.sh regexp='.*Xloggc.*' line="CATALINA_OPTS=\"$CATALINA_OPTS -Xloggc:$LOGBASEABS/logs/gc-`date +%F_%H%m%S`.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=2M\""
+
 # BigSense favicon
 
 - copy: src=favicon.ico dest={{ confluence_base }}/confluence/favicon.ico
