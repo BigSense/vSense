@@ -14,6 +14,8 @@
 - template: src=bigsense.passphrase.j2 dest={{ pgp_passfile }} owner=repoman mode=0400
 - command: gpg --import {{ repoman_home }}/bigsense.sec creates={{ repoman_home }}/.gnupg/secring.gpg
   sudo_user: repoman
+- shell: gpg --export -a "{{ pgp.comment }}" > {{ webroot }}/bigsense.io.key
+  sudo_user: repoman
 
 # serve repo though nginx
 - template: src=nginx.j2 dest=/etc/nginx/sites-available/repo owner=root group=root mode=0644

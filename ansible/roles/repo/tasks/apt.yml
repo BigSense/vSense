@@ -31,8 +31,6 @@
   register: publish_repo
   sudo_user: repoman
 - file: path={{ publish_init }} state=touch
-- shell: gpg --export -a "BigSensePGPKey" > {{ webroot }}/bigsense.io.key
-  sudo_user: repoman
 - file: src={{ repoman_home }}/public path={{ webroot }}/debs state=link
 
 
