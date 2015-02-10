@@ -8,17 +8,17 @@ Installation
 
 vSense depends on Vagrant 1.6+, Ansible 1.8+ and VirtualBox, as well as some additional vagrant plugins. Check your Linux distribution's package repository for installing Vagrant, Ansible and VirtualBox. Then run the following:
 
-`
+```
 git clone https://github.com/sumdog/vSense
 vagrant plugin install vagrant-hostmanager
-`
+```
 
 Dependencies
 ============
 
 Ubuntu 14.04 LTS doesn't have current versions of most of the dependencies we need.
 
-`
+```
 # Install Vagrant 1.7
 
 wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
@@ -31,10 +31,20 @@ sudo apt-add-repository ppa:ansible/ansible
 sudo apt-get update
 sudo apt-get install ansible
 
-# Install packages needed for security (options)
+# Install packages needed for security (optional)
 
 sudo apt-get install whois pwgen
-`
+```
+
+On Gentoo, you will need additional overlays:
+
+```
+# vagrant 1.6
+
+sudo layman -a andy
+sudo echo "=app-emulation/vagrant-bin-1.6.1 ~amd64" >> /etc/portage/package.accept_keywords
+
+```
 
 Creating a Runtime Environment
 ==============================
@@ -43,10 +53,10 @@ A BigSense environment consists of at least three virtual machines: a BigSense s
 
 The `vsense create` command can be used to build an environment. In the following example, we'll create an environment called staging which uses a PostgreSQL database for storage:
 
-`
+```
 cd vSense
 ./vsense create -d postgres staging
-`
+```
 
 This will create the appropriate Vagrant files in *virtual-env/staging*. You can edit `virtual-env/staging/environment.yml` to fine tune your settings. If you have multiple environments, you must edit this file to ensure each environment gets unique IP addresses.
 
@@ -71,7 +81,7 @@ BigSense does support a Microsoft SQL Server backend. Although Microsoft does pr
 TODO: figure out how to auto-mount the SQL Server ISO and install via powershell and document it
 
 
-Creating a build Environment (advanced)
+Creating a Build Environment (advanced)
 =======================================
 
 A build environment can be useful for developers who wish to fork the project and have their own build servers and local package repositories. Most end-users won't need to do this, but this may be useful for developers.
