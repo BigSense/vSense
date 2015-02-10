@@ -1,2 +1,6 @@
 ---
-- action: apt update_cache=yes
+- include: deb-system.yml
+  when: ansible_distribution in [ 'Debian', 'Ubuntu' ]
+
+- include: rpm-system.yml
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]
