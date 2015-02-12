@@ -63,7 +63,11 @@ if __name__ == '__main__':
 
     for rpm in glob( os.path.join(rpms, '*.rpm')):
         component = stage_from_version(rpm)
-        shutil.move(rpm, os.path.join(yums, component))
+        dest_dir = os.path.join(yums, component)
+        if os.path.exists(os.path.join(dest_dir, os.path.basename(rpm))):
+            os.unlink(rpm)
+        else:
+            shutil.move(rpm, dest_dir)
 
     for stage in components:
         run_cmd(('createrepo', '--update', os.path.join(yums, stage)))
