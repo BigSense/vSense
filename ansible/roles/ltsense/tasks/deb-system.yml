@@ -12,7 +12,7 @@
   action: apt name=ltsense force=true
 
 - name: configure bigsense
-  template: src=ltsense.conf.j2 dest=/etc/ltsense/ltsense.conf owner=root group=ltsense mode=0640
+  template: src=ltsense.conf.j2 dest=/etc/ltsense/ltsense.conf owner=root group=root mode=0644
   notify: 'Restart LtSense'
 
 - name: enable and start ltsense
