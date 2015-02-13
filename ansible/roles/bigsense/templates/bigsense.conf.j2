@@ -1,26 +1,21 @@
-environment={{ bigsense.environment }}
 {% if database.type == 'postgres' %}
-connectionString=jdbc:postgresql://{{ servers.database.hostname }}:5432/{{ database.name }}
-dbDriver=org.postgresql.Driver
 dbms=pgsql
+dbPort=5432
 {% endif %}
 {% if database.type == 'mysql' %}
-connectionString=jdbc:mysql://{{ servers.database.hostname }}:3306/{{ database.name }}?useLegacyDatetimeCode=false&serverTimezone=UTC
-dbDriver=com.mysql.jdbc.Driver
 dbms=mysql
+dbPort=3306
 {% endif %}
 {% if database.type == 'mssql' %}
-connectionString=jdbc:jtds:sqlserver://{{ servers.database.hostname }}\instance:port/{{ database.name }}
-dbDriver=net.sourceforge.jtds.jdbc.Driver
 dbms=mssql
+dbPort=1433
 {% endif %}
+dbHostname={{ servers.database.hostname }}
+dbDatabase={{ database.name }}
 dbUser={{ database.username }}
 dbPass={{ database.password }}
 dboUser={{ database.ddl_username }}
 dboPass={{ database.ddl_password }}
 securityManager={{ bigsense.security_manager }}
 httpPort={{ bigsense.http_port }}
-dbPoolMaxPerPart={{ bigsense.dbPoolMaxPerPart|default('3') }}
-dbPoolMinPerPart={{ bigsense.dbPoolMinPerPart|default('1') }}
-dbPoolPartitions={{ bigsense.dbPoolPartitions|default('1') }}
 server={{ bigsense.server }}

@@ -1,14 +1,14 @@
-- name: update apt cache
-  action: apt update_cache=yes
-
-- name: install openjdk-7
-  action: apt name=openjdk-7-jre
-
 - name: add bigsense repo key
   apt_key: url={{ apt_key }} state=present
 
 - name: add bigsense repo
   apt_repository: repo="{{ apt }}" state=present
+
+- name: update apt cache
+  action: apt update_cache=yes
+
+- name: install openjdk-7
+  action: apt name=openjdk-7-jre
 
 - name: install bigsense
   action: apt name=bigsense force=true
