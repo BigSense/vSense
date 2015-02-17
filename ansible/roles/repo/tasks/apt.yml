@@ -24,7 +24,7 @@
 - file: path={{ repo_init }} state=touch
   when: create_repo|success
 
-publish repo
+# publish repo
 
 - shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -component={{repos[1]|join(',')}} -config={{ aptly_config }} publish repo {% for i in repos[1] %}{{item}}-{{i}} {% endfor %}  creates={{ publish_init }}
   with_items: repos[0]
