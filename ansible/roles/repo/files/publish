@@ -10,7 +10,10 @@ homedir = os.path.expanduser('~')
 debs = os.path.join(homedir, 'debs')
 rpms = os.path.join(homedir, 'rpms')
 yums = os.path.join(homedir, 'yum')
+init_systems = ['upstart', 'systemv', 'systemd']
 components = ['nightly', 'testing', 'stable' ]
+config = os.path.join(homedir, 'aptly.conf')
+
 packages = { 'rpm' :
               { 'component_split' : '-', 'version_split' : '_' },
              'deb' :
@@ -31,11 +34,12 @@ def stage_from_version(file):
     """
     versions that contain a dash or underscore (e.g. -1-2afe32) are nightly
     versions that do not end with a number (e.g alpha, beta) are testing
-    all other version (e.g. 0.2.5) are stable
+    all other version (e.g. 0.2.5) are stable. The ~upstart/~systemd are
+    trimmed and ignored.
     """
     package_type = 'rpm' if file.endswith('.rpm') else 'deb'
     split_char = '-' if file.endswith('.rpm') else '_'
-    version = file.split(packages[package_type]['component_split'])[1]
+    version = file.split(packages[package_type]['component_split'])[1].split('~')[0]
     ends_with_number = re.search(r'\d+$', version)
 
     if packages[package_type]['version_split'] in version:
@@ -47,17 +51,17 @@ def stage_from_version(file):
 
 if __name__ == '__main__':
 
-    for repo_config in glob( os.path.join(homedir, '*.aptly') ):
-        for deb in glob( os.path.join(debs, repo_name(repo_config), '*.deb') ):
+    for init_type in init_systems:
+        for deb in glob( os.path.join(debs, init_type, '*.deb') ):
             component = stage_from_version(deb)
-            run_cmd(('aptly','-config={}'.format(repo_config),'repo','add','{}-{}'.format(repo_name(repo_config),component),deb))
+            run_cmd(('aptly','-config={}'.format(config),'repo','add','{}-{}'.format(init_type,component),deb))
             os.unlink(deb)
 
     # Can't get -passphrase-file to work
     passphrase = open(os.path.join(homedir,'bigsense.passphrase')).readlines()[0].strip()
 
-    for repo_config in glob( os.path.join(homedir, '*.aptly') ):
-        run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(repo_config), 'publish', 'update', repo_name(repo_config)))
+    for init_type in init_systems:
+        run_cmd(('aptly', '-passphrase={}'.format(passphrase), '-config={}'.format(config), 'publish', 'update', init_type))
 
     # RPMs
 

@@ -1,6 +1,6 @@
 ---
 repos:
-  - [ { version: trusty, distribution: Ubuntu }, { version: wheezy, distribution: Debian } ]
+  - [ upstart, systemv, systemd ]
   - [ stable, testing, nightly ]
 repoman_home: /home/repoman
 repo_init: "{{repoman_home}}/.repoinit"
@@ -8,3 +8,4 @@ publish_init: "{{repoman_home}}/.published"
 timestamp: "{{ ansible_date_time.epoch }}"
 pgp_passfile: "{{ repoman_home }}/bigsense.passphrase"
 webroot: "{{repoman_home}}/www"
+aptly_config: "{{ repoman_home }}/aptly.conf"
