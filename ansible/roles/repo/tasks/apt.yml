@@ -17,7 +17,7 @@
 
 - file: path={{ repoman_home }}/aptly state=directory owner=repoman group=repoman mode=0755
 - template: src=aptly.conf.j2 dest={{ aptly_config }} owner=root mode=0644
-- command: aptly repo create -comment="bigsense repository {{ item[0] }}" -component={{ item[1] }} -config={{ aptly_config }} {{ item[0] }}-{{ item[1] }} creates={{ repo_init }}
+- command: aptly repo create -comment="bigsense repository" -component={{ item[1] }} -config={{ aptly_config }} {{ item[0] }}-{{ item[1] }} creates={{ repo_init }}
   with_nested: repos
   register: create_repo
   sudo_user: repoman
@@ -26,7 +26,7 @@
 
 # publish repo
 
-- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -component={{repos[1]|join(',')}} -config={{ aptly_config }} publish repo {% for i in repos[1] %}{{item}}-{{i}} {% endfor %}  creates={{ publish_init }}
+- shell: aptly -passphrase=$(cat {{ pgp_passfile }}) -distribution={{ item }} -component={{repos[1]|join(',')}} -config={{ aptly_config }} publish repo {% for i in repos[1] %}{{item}}-{{i}} {% endfor %}  creates={{ publish_init }}
   with_items: repos[0]
   register: publish_repo
   sudo_user: repoman
