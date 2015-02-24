@@ -7,12 +7,18 @@
 # Install pacakges
 
 - action: apt name=createrepo
+- action: apt name=expect
 
 # Create Repos
 
 - command: createrepo {{ repoman_home }}/yum/{{ item }} --deltas creates={{ repoman_home }}/yum/{{ item }}/repodata/repomd.xml
   with_items: repos[1]
   sudo_user: repoman
+
+# PGP Signatures
+
+- template: src=rpmmacros.j2 dest={{ repoman_home }}/.rpmmacros owner=repoman group=repoman mode=0644
+- copy: src=rpmsign dest={{ repoman_home }} owner=root group=repoman mode=0550
 
 # Server via nginx
 

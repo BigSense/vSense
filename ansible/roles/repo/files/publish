@@ -68,9 +68,13 @@ if __name__ == '__main__':
     for rpm in glob( os.path.join(rpms, '*.rpm')):
         component = stage_from_version(rpm)
         dest_dir = os.path.join(yums, component)
+
         if os.path.exists(os.path.join(dest_dir, os.path.basename(rpm))):
             os.unlink(rpm)
         else:
+            # Sign RPM
+            run_cmd(('/home/repoman/rpmsign',rpm))
+
             shutil.move(rpm, dest_dir)
 
     for stage in components:

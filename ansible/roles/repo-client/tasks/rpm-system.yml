@@ -1,5 +1,5 @@
 - name: add bigsense repo key
-  rpm_key: url={{ pgp_key }} state=present
+  rpm_key: key={{ pgp_key }} state=present
 
 - name: add bigsense yum repo
   template: src=bigsense.repo.j2 dest=/etc/yum.repos.d/bigsense.repo owner=root mode=0644
