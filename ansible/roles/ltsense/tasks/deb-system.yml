@@ -1,19 +1,6 @@
 ---
-- name: add bigsense repo key
-  apt_key: url={{ apt_key }} state=present
-
-- name: add bigsense repo
-  apt_repository: repo="{{ apt }}" state=present
-
 - name: update apt cache
   action: apt update_cache=yes
 
 - name: install ltsense
   action: apt name=ltsense force=true
-
-- name: configure bigsense
-  template: src=ltsense.conf.j2 dest=/etc/ltsense/ltsense.conf owner=root group=root mode=0644
-  notify: 'Restart LtSense'
-
-- name: enable and start ltsense
-  service: name=ltsense enabled=yes state=started

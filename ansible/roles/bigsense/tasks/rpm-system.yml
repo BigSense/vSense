@@ -1,0 +1,2 @@
+---
+- yum: name=bigsense state=latest

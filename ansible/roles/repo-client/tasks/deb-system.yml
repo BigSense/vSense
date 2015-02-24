@@ -1,0 +1,5 @@
+- name: add bigsense repo key
+  apt_key: url={{ pgp_key }} state=present
+
+- name: add bigsense repo
+  apt_repository: repo="{{ apt }}" state=present

@@ -1,4 +1,2 @@
 ---
-apt: "deb {{ repository.protocol }}://{{ repository.host }}/debs trusty {{ repository.stage }}"
-apt_key: "{{ repository.protocol }}://{{ repository.host }}/bigsense.io.key"
-bigsense_endpoint: "http://{{ servers.bigsense.ip }}:{{ bigsense.http_port }}/"
+bigsense_endpoint: "http://{{ servers.bigsense.ip }}:{{ bigsense.http_port }}"

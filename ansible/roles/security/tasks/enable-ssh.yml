@@ -1,3 +1,9 @@
 ---
 # We're not useing authorized_key because we want to wipeout the existing unsecure key
-- copy: src={{ security.ssh_key_file }}.pub dest=/home/vagrant/.ssh/authorized_keys owner=vagrant group=vagrant mode=0600
+# - copy: src={{ security.ssh_key_file }}.pub dest=/home/vagrant/.ssh/authorized_keys owner=vagrant group=vagrant mode=0600
+- authorized_key: user=vagrant key="{{ item }}"
+  with_file:
+    - "{{ security.ssh_key_file }}.pub"
+- authorized_key: user=vagrant key="{{ item }}" state=absent
+  with_file:
+    - vagrant-insecure.pub

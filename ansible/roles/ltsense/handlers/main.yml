@@ -1,0 +1,4 @@
+# Restart Bigsense
+- name: Restart LtSense
+  sudo: yes
+  service: name=ltsense enabled=yes state=restarted

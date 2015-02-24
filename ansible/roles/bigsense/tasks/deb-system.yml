@@ -1,9 +1,3 @@
-- name: add bigsense repo key
-  apt_key: url={{ apt_key }} state=present
-
-- name: add bigsense repo
-  apt_repository: repo="{{ apt }}" state=present
-
 - name: update apt cache
   action: apt update_cache=yes
 
@@ -12,10 +6,3 @@
 
 - name: install bigsense
   action: apt name=bigsense force=true
-
-- name: configure bigsense
-  template: src=bigsense.conf.j2 dest=/etc/bigsense/bigsense.conf owner=root group=bigsense mode=0640
-  notify: 'Restart BigSense'
-
-- name: enable and start bigsense
-  service: name=bigsense enabled=yes state=started

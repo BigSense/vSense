@@ -4,3 +4,10 @@
 
 - include: rpm-system.yml
   when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]
+
+- name: configure bigsense
+  template: src=bigsense.conf.j2 dest=/etc/bigsense/bigsense.conf owner=root group=bigsense mode=0640
+  notify: 'Restart BigSense'
+
+- name: enable and start bigsense
+  service: name=bigsense enabled=yes state=started

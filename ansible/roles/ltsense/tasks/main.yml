@@ -4,3 +4,10 @@
 
 - include: rpm-system.yml
   when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]
+
+- name: configure ltsense
+  template: src=ltsense.conf.j2 dest=/etc/ltsense/ltsense.conf owner=root group=root mode=0644
+  notify: 'Restart LtSense'
+
+- name: enable and start ltsense
+  service: name=ltsense enabled=yes state=started

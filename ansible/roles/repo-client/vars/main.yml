@@ -1,0 +1,3 @@
+apt: "deb {{ repository.protocol }}://{{ repository.host }}/debs {{ init_system }} {{ repository.stage }}"
+yum: "{{ repository.protocol }}://{{ repository.host }}/rpms/{{ repository.stage }}"
+pgp_key: "{{ repository.protocol }}://{{ repository.host }}/bigsense.io.key"
