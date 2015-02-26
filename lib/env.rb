@@ -3,11 +3,11 @@ require_relative "action"
 
 class Environment
 
-  DEFAULT_VIRTUALBOX_IMGS = { 
+  DEFAULT_VIRTUALBOX_IMGS = {
     'ubuntu' => 'ubuntu/trusty64',
-    'debian' => 'zauberpony/wheezy',
-    'centos' =>  'hansode/centos-7.0.1406-x86_64',
-    'opensuse' => 'alchemy/opensuse-13.2-64' 
+    'debian' => 'puppetlabs/debian-7.8-64-nocm',
+    'centos' =>  'chef/centos-7.0',
+    'opensuse' => 'alchemy/opensuse-13.2-64'
   }
 
   ENV_FILE = File.join(Action::ENVS,'vsense.yml')
