@@ -171,6 +171,31 @@ To use a custom SSH key for the vagrant user:
 ./vsense secure -s [path to ssh key]
 `
 
+Using libvirt+kvm/qemu (advanced)
+=================================
+
+Our production servers use libvirt+kvm/qemu instead of virtualbox. At a basic level, you need to change your vagrant provider and the boxes.
+
+For the provider, set `VAGRANT_DEFAULT_PROVIDER=libvirt` in your current shell (or in your `.bashrc` file to presist across logins).
+
+Then adjust the boxes in `virtual-env/vsense.yml` (you may need to create an environment first to create this file). You will need boxes that are designed for libvirt. Currently, only Ubuntu has been tested:
+
+```
+boxes:
+  ubuntu: baremettle/ubuntu-14.04
+```
+
+You'll also need to install the appropiate packages:
+
+```
+apt-get install qemu-kvm libvirt-bin libvirt-dev python-libvirt
+```
+
+And install the corret plugin in Vagrant:
+
+```
+vagrant plugin install vagrant-libvirt
+```
 
 Creating a Cross-Matrix Environment (advanced)
 ==============================================
