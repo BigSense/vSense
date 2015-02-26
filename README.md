@@ -24,12 +24,9 @@ Ubuntu 14.04 LTS doesn't have current versions of most of the dependencies we ne
 wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
 sudo dpkg -i vagrant_1.7.2_x86_64.deb
 
-# Install Ansible
+# Install packages
 
-sudo apt-get install software-properties-common
-sudo apt-add-repository ppa:ansible/ansible
-sudo apt-get update
-sudo apt-get install ansible
+sudo apt-get install ansible virtualbox
 
 # Install packages needed for security (optional)
 
@@ -39,10 +36,18 @@ sudo apt-get install whois pwgen
 On Gentoo, you will need additional overlays:
 
 ```
-# vagrant 1.6
+# Install Vagrant 1.6+
 
 sudo layman -a andy
-sudo echo "=app-emulation/vagrant-bin-1.6.1 ~amd64" >> /etc/portage/package.accept_keywords
+sudo echo ">=app-emulation/vagrant-bin-1.6.1 ~amd64" >> /etc/portage/package.accept_keywords
+
+# Install packages
+
+emerge -av vagrant-bin ansible virtualbox
+
+# Install packages needed for security (optional)
+
+emerge -av whois pwgen
 
 ```
 
@@ -51,11 +56,11 @@ Creating a Runtime Environment
 
 A BigSense environment consists of at least three virtual machines: a BigSense server, a database server and a LtSense client. In the Vagrant virtual environment, the LtSense client transmits data from fake virtual sensors (randomly generated data). vSense can be used to automate the process of building such an environment.
 
-The `vsense create` command can be used to build an environment. In the following example, we'll create an environment called staging which uses a PostgreSQL database for storage:
+The `vsense create` command can be used to build an environment. In the following example, we'll create an environment called staging which uses a PostgreSQL database for storage, Ubuntu as the operating system and nightly builds of bigsense and ltsense:
 
 ```
 cd vSense
-./vsense create -d postgres staging
+./vsense create -d postgres -o ubuntu -s nightly staging
 ```
 
 This will create the appropriate Vagrant files in *virtual-env/staging*. You can edit `virtual-env/staging/environment.yml` to fine tune your settings. If you have multiple environments, you must edit this file to ensure each environment gets unique IP addresses.
@@ -66,17 +71,31 @@ Next you can start the environment:
 ./vsense start staging
 `
 
-The Vagrant VMs start and the Ansible provisioning scripts will run. You may be prompted for your password as the vagrant-hostmanager plugin will need root privilages to update your */etc/hosts* file. When finished, you'll have three VMs. The *ltsense-staging* VM will start transmitting randomly generated temperatures to the *bigsense-staging* VM. Assuming you're using the default *environment.yml*, you should be able to view the take sensor data by going to the following web address:
+The Vagrant VMs start and the Ansible provisioning scripts will run. You may be prompted for your password as the vagrant-hostmanager plugin will need root privileges to update your */etc/hosts* file. When finished, you'll have three VMs. The *ltsense-staging* VM will start transmitting randomly generated temperatures to the *bigsense-staging* VM. Assuming you're using the default *environment.yml*, you should be able to view the take sensor data by going to the following web address:
 
 `http://bigsense-staging.internal:8080/api/Query/Latest/100.txt`
 
-Congradulations. You now have a BigSense virtual environment. In a real deployment, LtSense would most likely be running on an embeded Linux system with actual sensors attached to it. Packages for BigSense and LtSense are available for many distributions. For full installation and condiguration insturctions, visit http://bigsense.io
+Congratulations. You now have a BigSense virtual environment. You can also setup a virtual environment with different operating systems and databases. vSense currently supports Ubuntu 14.04, Debian 7 and CentOS 7 (OS flags only affect the BigSense and LtSense VMs. The database VM will always be Ubuntu.)
+
+
+```
+# create a mysql environment that uses CentOS and nightly builds:
+
+./vsense create -d mysql -o centos -s nightly centos-nightly-mysql
+
+# create a postgres environment that uses debian and stable builds:
+
+./vsense create -d postgres -o debian -s stable debian-stable-postgres
+
+```
+
+In a real deployment, LtSense would most likely be running on an embedded Linux system with actual sensors attached to it. Packages for BigSense and LtSense are available for many distributions. For full installation and configuration instructions, visit http://bigsense.io
 
 
 Using a Microsoft SQL Server (Experimental)
 ===========================================
 
-BigSense does support a Microsoft SQL Server backend. Although Microsoft does provide Vagrent boxes for Windows Server 2012, they're only for the Hyper-V provider. For vSense using VirtualBox, you will have to manually create a Windows Server 2012 R2 box and name it *Windows2012R2*. Currently this functionality is missing from vSense and the `-d mssql` doesn't currently work. I hope to add this functionality in the future.
+BigSense does support a Microsoft SQL Server backend. Although Microsoft does provide Vagrant boxes for Windows Server 2012, they're only for the Hyper-V provider. For vSense using VirtualBox, you will have to manually create a Windows Server 2012 R2 box and name it *Windows2012R2*. Currently this functionality is missing from vSense and the `-d mssql` doesn't currently work. I hope to add this functionality in the future.
 
 TODO: figure out how to auto-mount the SQL Server ISO and install via powershell and document it
 
@@ -100,15 +119,15 @@ You can also fine tune various other settings in the `environment.yml`, includin
 ./vsense genkeys builder
 `
 
-Next, you can start the build environemnt:
+Next, you can start the build environment:
 
 `
 ./vsense start builder
 `
 
-You should now have two virtual machines: build and repo. By default, build runs a Jenkins instance that will poll the git repository every 15 minutes to determine if it needs to build new pacakges. You can start these jobs manually by going to `http://build.internal:8080` and executing the BigSense and LtSense jobs.
+You should now have two virtual machines: build and repo. By default, build runs a Jenkins instance that will poll the git repository every 15 minutes to determine if it needs to build new packages. You can start these jobs manually by going to `http://build.internal:8080` and executing the BigSense and LtSense jobs.
 
-TODO: insert screenshot
+TODO: insert screen shot
 
 Finally, you can create a local runtime environment that pulls packages from the local build environment:
 
@@ -116,7 +135,7 @@ Finally, you can create a local runtime environment that pulls packages from the
 ./vsense create -e run -d postgres -b builder staging
 `
 
-Keep in mind that Jenkins builds packages and publishes them to the appropiate repository tree based on their version numbers. If the current commit has a tag associated it which is a version number, the package will get published in *stable*. If the tag is a version number followed by characters (e.g. 0.5beta), it will be published in *testing*. If the current commit is past the latest tag, the package version will end in the short commit hash (e.g. 0.5beta-4-as4g3a) and will be published in *nightly*.
+Keep in mind that Jenkins builds packages and publishes them to the appropriate repository tree based on their version numbers. If the current commit has a tag associated it which is a version number, the package will get published in *stable*. If the tag is a version number followed by characters (e.g. 0.5beta), it will be published in *testing*. If the current commit is past the latest tag, the package version will end in the short commit hash (e.g. 0.5beta-4-as4g3a) and will be published in *nightly*.
 
 If the runtime environment is configured for a branch that doesn't have any packages published yet, it will fail to provision.
 
@@ -124,9 +143,7 @@ If the runtime environment is configured for a branch that doesn't have any pack
 Infrastructure (advanced)
 =========================
 
-The Infrastructure environemnt is a special case for building an haproxy and wiki. It's used for the internal systems that hose http://bigsense.io. You probably don't need to build this unless you plan on hosting an entire BigSense organization of your own, or need your various environments accessable from the outside world.
-
-TODO: expand documentation
+The Infrastructure environment is a special case for building an haproxy and wiki. It's used for the internal systems that host http://bigsense.io. You probably don't need to build this unless you plan on hosting an entire BigSense organization of your own, or need your various environments accessible from the outside world.
 
 
 Security
@@ -140,7 +157,7 @@ The secure action requires the following dependencies:
 
 * pwgen
 * whois (for mkpasswd)
-* pass (option)
+* pass (optional)
 
 To automatically generate passwords and encrypt them, you must specify a PGP key ID that exists in your keystore.
 
@@ -158,6 +175,6 @@ To use a custom SSH key for the vagrant user:
 Creating a Cross-Matrix Environment (advanced)
 ==============================================
 
-vSense comes with fixtures designed for intergration tests. The most common of these tests would be to build environments for each supported database and ensure they all return the same results.
+vSense comes with fixtures designed for integration tests. The most common of these tests would be to build environments for each supported database and ensure they all return the same results.
 
 TODO - Implement fixtures and cross-environment tests / add documentation
