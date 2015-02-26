@@ -1,12 +1,12 @@
 ---
 - set_fact: init_system='systemv'
-  when: ansible_distribution == 'Debian' and {{ ansible_distribution_version | version_compare('7', '<=') }}
-
-- set_fact: init_system='upstart'
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Debian'
 
 - set_fact: init_system='systemd'
   when: ansible_distribution == 'Debian' and {{ ansible_distribution_version | version_compare('8', '>=') }}
+
+- set_fact: init_system='upstart'
+  when: ansible_distribution == 'Ubuntu'
 
 - include: deb-system.yml
   when: ansible_distribution in [ 'Debian', 'Ubuntu' ]
