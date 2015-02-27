@@ -27,6 +27,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     build.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "2048"]
     end
+    build.vm.provider "libvirt" do |virt|
+      virt.memory = 2048
+      virt.cpus = 2
+    end
     build.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/build.yml"
     end
