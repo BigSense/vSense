@@ -7,7 +7,7 @@ class Environment
     'ubuntu' => 'ubuntu/trusty64',
     'debian' => 'puppetlabs/debian-7.8-64-nocm',
     'centos' =>  'chef/centos-7.0',
-    'opensuse' => 'alchemy/opensuse-13.2-64'
+    'opensuse' => 'webhippie/opensuse-13.1'
   }
 
   ENV_FILE = File.join(Action::ENVS,'vsense.yml')
