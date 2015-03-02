@@ -1,3 +1,12 @@
 ---
 - yum: name=java-1.7.0-openjdk-headless state=latest
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux' ]
+
+- zypper: name=java-1_7_0-openjdk-headless state=latest
+  when: ansible_distribution in [ 'Suse' ]
+
 - yum: name=bigsense state=latest
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux' ]
+
+- zypper: name=bigsense state=latest
+  when: ansible_distribution in [ 'Suse' ]

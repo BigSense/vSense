@@ -3,7 +3,7 @@
   when: ansible_distribution in [ 'Debian', 'Ubuntu' ]
 
 - include: rpm-system.yml
-  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'Suse' ]
 
 - name: configure ltsense
   template: src=ltsense.conf.j2 dest=/etc/ltsense/ltsense.conf owner=root group=root mode=0644

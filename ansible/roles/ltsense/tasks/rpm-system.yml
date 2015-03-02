@@ -1,2 +1,6 @@
 ---
 - yum: name=ltsense state=latest
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux' ]
+
+- zypper: name=ltsense state=latest
+  when: ansible_distribution in [ 'Suse' ]

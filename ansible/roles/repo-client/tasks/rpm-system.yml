@@ -3,3 +3,8 @@
 
 - name: add bigsense yum repo
   template: src=bigsense.repo.j2 dest=/etc/yum.repos.d/bigsense.repo owner=root mode=0644
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux' ]
+
+- name: add bigsense zypper repo
+  template: src=bigsense.repo.j2 dest=/etc/zypp/repos.d/bigsense.repo owner=root mode=0644
+  when: ansible_distribution in [ 'Suse' ]

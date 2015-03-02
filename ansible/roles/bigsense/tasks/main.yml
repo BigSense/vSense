@@ -3,7 +3,7 @@
   when: ansible_distribution in [ 'Debian', 'Ubuntu' ]
 
 - include: rpm-system.yml
-  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'opensuse' ]
+  when: ansible_distribution in [ 'CentOS', 'Red Hat Enterprise Linux', 'Suse' ]
 
 - name: configure bigsense
   template: src=bigsense.conf.j2 dest=/etc/bigsense/bigsense.conf owner=root group=bigsense mode=0640
