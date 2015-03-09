@@ -11,6 +11,8 @@ class CreateAction < Action
 
   STAGES = [:stable, :testing, :nightly]
 
+  FIXTURES = [:gls]
+
 ## Arguments
 
   def set_options()
@@ -18,14 +20,14 @@ class CreateAction < Action
     @options = {}
     @opts = OptionParser.new do |opts|
 
-      opts.banner = 'Usage: vsense create [-f <gls>] [-e <env_type>] [-b <build_env>] [-d <db>] [-o <os>] [-s <stage>] <environment name>'
+      opts.banner = 'Usage: vsense create [-f <fixture>] [-e <env_type>] [-b <build_env>] [-d <db>] [-o <os>] [-s <stage>] <environment name>'
 
       opts.on_tail("-h", "--help", "Show this message") do
         STDERR.puts opts
         exit
       end
 
-      opts.on('-f','--fixtures','Install fixtures') do |f|
+      opts.on('-f','--fixtures','Install fixtures (gls)') do |f|
         @options[:fixtures] = f
       end
 
@@ -65,13 +67,18 @@ class CreateAction < Action
 
     if @options[:environment] == :build or @options[:environment] == :infrastructure
       @options.each do |key,val|
-        if not ([key[0]] & ['b','d','s','o']).empty?
+        if not ([key[0]] & ['b','d','s','o', 'f']).empty?
           STDERR.puts "Only run environment take a --#{key} flag".red
           exit 1
         end
       end
     end
 
+    # valid fixture set
+    if not @options[:fixtures].nil? and not FIXTURES.include?(@options[:fixtures])
+      STDERR.puts "#{@options[:fixtures]} is not a valid fixture.".red
+      exit 1
+    end
 
     # Run defaults
 
@@ -128,6 +135,10 @@ class CreateAction < Action
 
       for i in env_config['servers'].keys
         env_config['servers'][i]['hostname'].sub!('%env%',@args[0])
+      end
+
+      if not @options[:fixtures].nil?
+        env_config['fixtures'] = @options[:fixtures].to_s
       end
 
       # connected to a build environment?

@@ -8,3 +8,6 @@
 
 - include: mysql.yml
   when: database.type == 'mysql'
+
+- include: fixtures.yml
+  when: fixtures is defined
