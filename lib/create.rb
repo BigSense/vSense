@@ -27,8 +27,8 @@ class CreateAction < Action
         exit
       end
 
-      opts.on('-f','--fixtures','Install fixtures (gls)') do |f|
-        @options[:fixtures] = f
+      opts.on('-f','--fixtures FIXTURE',FIXTURES,'Install fixtures (gls)') do |fixture|
+        @options[:fixtures] = fixture
       end
 
       opts.on('-e','--env ENVIRONMENT',[:build,:run,:infrastructure],'Environment type (build|run|infrastructure) [default: run]') do |e|
@@ -74,12 +74,6 @@ class CreateAction < Action
       end
     end
 
-    # valid fixture set
-    if not @options[:fixtures].nil? and not FIXTURES.include?(@options[:fixtures])
-      STDERR.puts "#{@options[:fixtures]} is not a valid fixture.".red
-      exit 1
-    end
-
     # Run defaults
 
     if @options[:stage].nil?
@@ -98,10 +92,6 @@ class CreateAction < Action
       end
       if @options[:database].nil?
         STDERR.puts "-d database type required.".red
-        exit 1
-      end
-      if not DATABASES.include?(@options[:database])
-        STDERR.puts "#{@options[:database]} is not a valid database type".red
         exit 1
       end
     end
