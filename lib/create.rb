@@ -28,7 +28,7 @@ class CreateAction < Action
       end
 
       opts.on('-f','--fixtures FIXTURE',FIXTURES,'Install fixtures (gls)') do |fixture|
-        @options[:fixtures] = fixture
+        @options[:fixture] = fixture
       end
 
       opts.on('-e','--env ENVIRONMENT',[:build,:run,:infrastructure],'Environment type (build|run|infrastructure) [default: run]') do |e|
@@ -127,8 +127,8 @@ class CreateAction < Action
         env_config['servers'][i]['hostname'].sub!('%env%',@args[0])
       end
 
-      if not @options[:fixtures].nil?
-        env_config['fixtures'] = @options[:fixtures].to_s
+      if not @options[:fixture].nil?
+        env_config['fixture'] = @options[:fixture].to_s
       end
 
       # connected to a build environment?

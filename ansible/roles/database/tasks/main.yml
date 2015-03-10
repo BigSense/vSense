@@ -10,4 +10,4 @@
   when: database.type == 'mysql'
 
 - include: fixtures.yml
-  when: fixtures is defined
+  when: fixture is defined

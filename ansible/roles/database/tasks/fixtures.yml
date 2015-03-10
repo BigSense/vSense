@@ -7,16 +7,20 @@
   when: fixture_init.stat.exists == False
 
 - name: install fixtures (mysql)
-  shell: mysql --user={{ database.ddl_username }} --password={{ database.ddl_password }} {{ database.database }} < {{ fixture_dest }}
+  shell: bzcat {{ fixture_dest }} | mysql --user={{ database.ddl_username }} --password={{ database.ddl_password }} {{ database.name }}
   when: fixture_init.stat.exists == False and database.type == "mysql"
   register: fixture_init_result
 
+- name: install password file (pgsql)
+  template: src=pgpass.j2 dest=/root/.pgpass mode=0600
+  when: database.type == "postgres"
+
 - name: install fixtures (pgsql)
-  shell: psql {{ database.database }} < {{ fixture_dest }}
-  sudo_user: postgres
+  shell: bzcat {{ fixture_dest }} | pg_restore -O -c -Fc -d {{ database.name }}
   when: fixture_init.stat.exists == False and database.type == "postgres"
+  sudo_user: postgres
   register: fixture_init_result
 
 - name: mark fixtured initalized
   file: path={{ fixture_init_file }} state=touch
-  when: fixture_init_file|success
+  when: fixture_init_result|success

@@ -31,7 +31,7 @@
 
 - name: add sql connection trust for BigSense server
   lineinfile: dest={{ pg_hba_conf }}
-    regexp="^host\s+{{ database.name }}\s+{{ database.username }}\s+.*\s+trust$"
+    regexp="^host\s+{{ database.name }}\s+{{ database.username }},{{ database.ddl_username }}\s+.*\s+trust$"
     insertafter="^#\sIPv4\slocal.+"
     line="host {{ database.name }} {{ database.username }},{{ database.ddl_username }} {{ servers.bigsense.ip }}/32 trust"
   notify: 'Restart Postgres'
