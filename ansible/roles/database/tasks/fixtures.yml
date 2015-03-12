@@ -7,7 +7,7 @@
   when: fixture_init.stat.exists == False
 
 - name: install fixtures (mysql)
-  shell: bzcat {{ fixture_dest }} | mysql --user={{ database.ddl_username }} --password={{ database.ddl_password }} {{ database.name }}
+  shell: bzcat {{ fixture_dest }} | mysql --user=root {{ database.name }}
   when: fixture_init.stat.exists == False and database.type == "mysql"
   register: fixture_init_result
 
