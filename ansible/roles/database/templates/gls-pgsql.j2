@@ -1,0 +1,4 @@
+CREATE USER db_gls_ddl CREATEDB PASSWORD '{{ database.ddl_password }}';
+CREATE USER db_gls PASSWORD '{{ database.password }}';
+GRANT db_gls_ddl TO {{ database.ddl_username }};
+GRANT db_gls TO {{ database.username }};

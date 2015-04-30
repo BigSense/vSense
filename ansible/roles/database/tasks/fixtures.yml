@@ -15,8 +15,17 @@
   template: src=pgpass.j2 dest=/root/.pgpass mode=0600
   when: database.type == "postgres"
 
+- name: fixtures role map (pgsql)
+  template: src=gls-pgsql.j2 dest={{ fixture_pg_roles }} mode=0644
+  when: fixture_init.stat.exists == False and database.type == "postgres"
+
+- name: install role map (pgsql)
+  shell: psql -d {{ database.name }} < {{ fixture_pg_roles }}
+  when: fixture_init.stat.exists == False and database.type == "postgres"
+  sudo_user: postgres
+
 - name: install fixtures (pgsql)
-  shell: bzcat {{ fixture_dest }} | pg_restore -O -c -Fc -d {{ database.name }}
+  shell: bzcat {{ fixture_dest }} | pg_restore --clean -Fc -d {{ database.name }}
   when: fixture_init.stat.exists == False and database.type == "postgres"
   sudo_user: postgres
   register: fixture_init_result
