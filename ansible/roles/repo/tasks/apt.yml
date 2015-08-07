@@ -1,6 +1,6 @@
 ---
 # add aptly repo
-- apt_key: keyserver=keys.gnupg.net id=2A194991
+- apt_key: keyserver=keys.gnupg.net id=E083A3782A194991
 - apt_repository: repo='deb http://repo.aptly.info/ squeeze main' state=present
 
 # Install packages
