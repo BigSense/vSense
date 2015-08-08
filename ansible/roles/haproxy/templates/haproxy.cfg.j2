@@ -39,7 +39,6 @@ frontend public
   redirect scheme https if !{ ssl_fc }
   redirect prefix https://{{ domain }} code 301 if { hdr(host) -i www.{{ domain }} }
   bind :443 ssl crt {{ bigsense_pem }}
-  http-request set-header X-SSL-Secure true
 
   # SNI based vhosts
 
