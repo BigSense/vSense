@@ -1,0 +1,17 @@
+#!/bin/bash
+{{ certbot_dest }} \
+  certonly \
+  --standalone \
+  --standalone-supported-challenges tls-sni-01 \
+  --tls-sni-01-port {{ certbot_port }} \
+  --agree-tos \
+  --renew-by-default \
+  --non-interactive \
+  --email {{ ssl_email }} \
+{% for s in haproxy['vhosts'] %}
+{% if s['subdomain'] is defined %}
+  -d {{ s['subdomain'] }}.{{ domain }} \
+{% endif %}
+{% endfor %}
+  -d {{ domain }} \
+  -d www.{{ domain }}

@@ -3,6 +3,7 @@ name: core
 type: infrastructure
 domain: internal
 ext_gq: 10.42.7.1
+ssl_email: nobody@example.com
 servers:
   haproxy:
     hostname: haproxy

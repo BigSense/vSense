@@ -41,13 +41,18 @@ frontend public
   bind :443 ssl crt {{ bigsense_pem }}
   http-request set-header X-SSL-Secure true
 
+  # Let's Encrypt
+
+  acl is_letsencrypt path_beg -i /.well-known/acme-challenge/
+  use_backend letsencrypt if is_letsencrypt
+
   # SNI based vhosts
 
-  {% for s in haproxy['vhosts'] %}
-  {% if s['subdomain'] is defined %}
+  {% for s in haproxy['vhosts'] -%}
+  {% if s['subdomain'] is defined -%}
   use_backend {{ s['subdomain'] }} if { hdr(host) -i {{ s['subdomain'] }}.{{ domain }} }
-  {% endif %}
-  {% endfor %}
+  {% endif -%}
+  {% endfor -%}
   default_backend main
 
 {% for s in haproxy['vhosts'] %}
@@ -59,3 +64,5 @@ backend main
   server main {{ s['ip'] }}:{{ s['port'] }} check
 {% endif %}
 {% endfor %}
+backend letsencrypt
+  server letsencrypt 127.0.0.1:{{ certbot_port }}

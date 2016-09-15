@@ -1,3 +1,7 @@
 ---
-ssl_private: /etc/ssl/private/
+ssl_private: /etc/ssl/private
 bigsense_pem: "{{ssl_private}}/bigsense-ssl.pem"
+certbot_url: https://dl.eff.org/certbot-auto
+certbot_dest: /opt/certbot-auto
+certbot_port: 2021
+certbot_cron: /opt/certbot-cron

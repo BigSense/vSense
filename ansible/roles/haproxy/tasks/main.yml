@@ -6,6 +6,13 @@
 - action: apt update_cache=yes
 - action: apt name=haproxy
 
+# Let's Encrypt
+
+- get_url: url={{ certbot_url }} dest={{ certbot_dest }}
+- file: path={{ certbot_dest }} mode="a+x"
+- template: src=certbot-cron.j2 dest={{ certbot_cron }} owner=root group=root mode=0700
+- cron: name="LetsEncrypt" job="{{ certbot_cron }} > /tmp/letsencrypt.log" day=1
+
 # SSL Keys
 
 - copy: src=../bigsense-ssl.key dest={{ ssl_private }} owner=root group=root mode=0600
