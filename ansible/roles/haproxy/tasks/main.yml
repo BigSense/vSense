@@ -9,9 +9,9 @@
 # Let's Encrypt
 
 - get_url: url={{ certbot_url }} dest={{ certbot_dest }}
-- file: path={{ certbot_dest }} mode="a+x"
+- file: path={{ certbot_dest }} mode=0700
 - template: src=certbot-cron.j2 dest={{ certbot_cron }} owner=root group=root mode=0700
-- cron: name="LetsEncrypt" job="{{ certbot_cron }} > /tmp/letsencrypt.log" day=1
+- cron: name="LetsEncrypt" job="{{ certbot_cron }} > /tmp/letsencrypt.log" day=1 user=root cron_file=letsencrypt
 
 # SSL Keys
 
@@ -28,3 +28,4 @@
 # Start
 
 - service: name=haproxy enabled=yes state=started
+- shell: "{{ certbot_cron }}"

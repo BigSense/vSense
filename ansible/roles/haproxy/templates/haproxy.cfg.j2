@@ -34,16 +34,20 @@ defaults
 
 frontend public
   bind :80
-  http-request set-header X-Forwarded-Port %[dst_port]
-  http-request add-header X-Forwarded-Proto https if { ssl_fc }
-  redirect scheme https if !{ ssl_fc }
-  redirect prefix https://{{ domain }} code 301 if { hdr(host) -i www.{{ domain }} }
-  bind :443 ssl crt {{ bigsense_pem }}
 
   # Let's Encrypt
 
   acl is_letsencrypt path_beg -i /.well-known/acme-challenge/
   use_backend letsencrypt if is_letsencrypt
+
+  # SSL Redirect
+
+  http-request set-header X-Forwarded-Port %[dst_port]
+  http-request add-header X-Forwarded-Proto https if { ssl_fc }
+  redirect scheme https if !{ ssl_fc }
+  redirect prefix https://{{ domain }} code 301 if { hdr(host) -i www.{{ domain }} }
+  
+  bind :443 ssl crt {{ bigsense_pem }}
 
   # SNI based vhosts
 
