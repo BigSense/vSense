@@ -35,7 +35,7 @@ class Vagrant < Action
       end
     end
     if @command == 'start' and settings()['type'] == 'infrastructure'
-      if !File.exists?(File.join(@env_dir,'bigsense-ssl.key')) or !File.exists?(File.join(@env_dir,'bigsense-ssl.pem'))
+      if !File.exists?(File.join(@env_dir,'bigsense-ssl.key')) or !File.exists?(File.join(@env_dir,'bigsense-ssl.crt'))
         STDERR.puts "SSL Keys are missing. You must run ./vsense genkeys #{@args[0]}".red
         exit 1
       end
