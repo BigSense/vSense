@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     haproxy.vm.provider "libvirt" do |virt, virt_override|
       virt_override.vm.network :public_network, :dev => vars.ext_iface('haproxy'), :mode=>'bridge', :ip => vars.ext_ip('haproxy')
-      virt_override.vm.provision :shell, :inline => "echo -e \"$!/bin/sh -e\n#vsense dirty default route hack\nip route del 0/0;sudo route add default gw #{vars.ext_gw};exit 0\" > /etc/rc.local; chmod 755 /etc/rc.local; /etc/rc.local"
+      virt_override.vm.provision :shell, :inline => "echo -e \"#!/bin/sh -e\n#vsense dirty default route hack\nip route del 0/0;sudo route add default gw #{vars.ext_gw};exit 0\" > /etc/rc.local; chmod 755 /etc/rc.local; /etc/rc.local"
     end
     haproxy.vm.hostname = vars.hostname('haproxy')
     haproxy.hostmanager.aliases = vars.aliases('haproxy')
